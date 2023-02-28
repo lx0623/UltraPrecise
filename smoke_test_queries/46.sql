@@ -1,0 +1,1 @@
+select sum(n_nationkey) from nation where n_name='aaa';

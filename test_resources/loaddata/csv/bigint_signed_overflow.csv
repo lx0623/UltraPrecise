@@ -1,0 +1,4 @@
+create table t_bigint_signed_overflow( f1 bigint not null );
+load data infile '/path/to/csv' into table t_bigint_signed_overflow fields terminated by ',' ignore 2 lines;
+9223372036854775808
+9223372036854775807

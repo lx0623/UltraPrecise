@@ -1,0 +1,3 @@
+create table char_maxlen(f1 char(5) not null);
+load data infile '' into table char_maxlen ignore 2 lines;
+123456

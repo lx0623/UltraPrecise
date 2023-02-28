@@ -1,0 +1,4 @@
+create table t_decimal_overflow_int1( f1 decimal not null );
+load data infile '' into table t_decimal_overflow_int1 fields terminated by ',' ignore 2 lines;
+10000000000
+9999999999

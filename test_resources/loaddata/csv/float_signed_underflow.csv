@@ -1,0 +1,4 @@
+create table t_float_signed_underflow(f1 float not null);
+load data infile '' into table t_float_signed_underflow ignore 2 lines; 3.40282e38
+-3.40283e38
+-3.4e38

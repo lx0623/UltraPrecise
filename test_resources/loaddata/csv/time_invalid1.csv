@@ -1,0 +1,4 @@
+create table t_time_invalid1( f1 time not null );
+load data infile '' into table t_time_invalid1 fields terminated by ',' ignore 2 lines;
+abc
+11:11:11

@@ -1,0 +1,50 @@
+//
+// Created by tengjp on 19-8-14.
+//
+
+#ifndef AIRES_ARIESFRONTENDEXCEPTION_H
+#define AIRES_ARIESFRONTENDEXCEPTION_H
+
+#include <server/mysql/include/mysqld_error.h>
+#include "AriesException.h"
+
+namespace aries {
+    class AriesFrontendException : public AriesException {
+    public:
+        AriesFrontendException(int errCodeArg, const string &errMsgArg, const std::string& file_name = std::string(), int lineno = 0) :
+                AriesException(errCodeArg, errMsgArg, file_name, lineno) {}
+
+    };
+
+    class AriesParseException : public AriesFrontendException {
+    public:
+        AriesParseException(int errCodeArg, const string &errMsgArg) :
+                AriesFrontendException(errCodeArg, errMsgArg) {}
+
+    };
+    class AriesSyntaxNotSupportException: public AriesFrontendException {
+    public:
+        AriesSyntaxNotSupportException(int errCodeArg, const string& errMsgArg) :
+                AriesFrontendException(errCodeArg, errMsgArg) {}
+
+    };
+
+    // fake implementation for some query
+    class AriesFakeImplException : public AriesFrontendException {
+    public:
+        AriesFakeImplException( const string &errMsgArg, int argReply = 0, int errCodeArg = ER_NOT_SUPPORTED_YET ) :
+                AriesFrontendException(errCodeArg, errMsgArg),
+                reply(argReply)
+        {
+        }
+
+    public:
+        int reply = 0; // 0: ok, 1: error, 2: eof
+    };
+    void ThrowNotSupportedException(const string& msg);
+    void ThrowFakeImplException(const string& msg, int argReply = 0 );
+}
+
+#define AriesFrontendException(code, msg) AriesFrontendException(code, msg, __FILE__, __LINE__)
+
+#endif //AIRES_ARIESFRONTENDEXCEPTION_H

@@ -1,0 +1,4 @@
+create table t_double_signed_underflow(f1 double not null);
+load data infile '' into table t_double_signed_underflow ignore 2 lines; -1.7976931348623157e308
+-1.7986931348623157e308
+-1.79e308

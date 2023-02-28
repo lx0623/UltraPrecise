@@ -1,0 +1,3 @@
+create table t_decimal_overflow_max_value( f1 decimal(36, 0) not null );
+load data infile '' into table t_decimal_overflow_max_value fields terminated by ',' ignore 2 lines;
+999999999999999999999999999999999999

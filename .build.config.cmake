@@ -1,0 +1,1 @@
+set_property(GLOBAL PROPERTY CUDA_API_LEVEL "86")

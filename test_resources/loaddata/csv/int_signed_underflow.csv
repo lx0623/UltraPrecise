@@ -1,0 +1,4 @@
+create table t_int_signed_underflow( f1 int not null );
+load data infile '/path/to/csv' into table t_int_signed_underflow fields terminated by ',' ignore 2 lines;
+-2147483649
+-2147483648

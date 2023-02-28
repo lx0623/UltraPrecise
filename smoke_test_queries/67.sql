@@ -1,0 +1,1 @@
+select 1, n_nationkey, "constant string", n_name, 2*3 from nation;

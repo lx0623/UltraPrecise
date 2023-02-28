@@ -1,0 +1,4 @@
+create table t_time_overflow1( f1 time not null );
+load data infile '' into table t_time_overflow1 fields terminated by ',' ignore 2 lines;
+-100 12:28:58.999999
+11:11:11

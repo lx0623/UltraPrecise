@@ -1,0 +1,4 @@
+create table t_nullable_empty_values( f1 tinyint null, f2 smallint null, f3 int null, f4 bigint null, f5 float null, f6 double null, f7 decimal null, f8 char(64) null, f9 bool null );
+load data infile '/path/to/csv' into table t_nullable_empty_values fields terminated by ',' ignore 2 lines;
+,,,,,,,,
+1,1,1,1,1,1,1,1,1

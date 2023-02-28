@@ -1,0 +1,45 @@
+create index index_L_RETURNFLAG on lineitem(L_RETURNFLAG);
+create index index_L_LINESTATUS on lineitem(L_LINESTATUS);
+create index index_L_SHIPDATE on lineitem(L_SHIPDATE);
+create index index_L_PARTKEY on lineitem(L_PARTKEY);
+create index index_L_SUPPKEY on lineitem(L_SUPPKEY);
+create index index_L_COMMITDATE on lineitem(L_COMMITDATE);
+create index index_L_RECEIPTDATE on lineitem(L_RECEIPTDATE);
+create index index_L_SHIPMODE on lineitem(L_SHIPMODE);
+create index index_L_SHIPINSTRUCT on lineitem(L_SHIPINSTRUCT);
+create index index_L_LINENUMBER on lineitem(L_LINENUMBER);
+create index index_L_ORDERKEY on lineitem(L_ORDERKEY);
+
+create index index_P_SIZE on part(P_SIZE);
+create index index_P_TYPE on part(P_TYPE);
+create index index_P_NAME on part(P_NAME);
+create index index_P_BRAND on part(P_BRAND);
+create index index_P_CONTAINER on part(P_CONTAINER);
+create index index_P_PARTKEY on part(P_PARTKEY);
+
+create index index_R_NAME on region(R_NAME);
+create index index_R_REGIONKEY on region(R_REGIONKEY);
+
+create index index_C_MKTSEGMENT on customer(C_MKTSEGMENT);
+create index index_C_NAME on customer(C_NAME);
+create index index_C_PHONE on customer(C_PHONE);
+create index index_C_ADDRESS on customer(C_ADDRESS);
+create index index_C_CUSTKEY on customer(C_CUSTKEY);
+create index index_C_NATIONKEY on customer(C_NATIONKEY);
+
+create index index_O_ORDERDATE on orders(O_ORDERDATE);
+create index index_O_SHIPPRIORITY on orders(O_SHIPPRIORITY);
+create index index_O_ORDERSTATUS on orders(O_ORDERSTATUS);
+create index index_O_ORDERKEY on orders(O_ORDERKEY);
+create index index_O_CUSTKEY on orders(O_CUSTKEY);
+
+create index index_S_NAME on supplier(S_NAME);
+create index index_S_SUPPKEY on supplier(S_SUPPKEY);
+create index index_S_NATIONKEY on supplier(S_NATIONKEY);
+
+create index index_N_NATIONKEY on nation(N_NATIONKEY);
+create index index_N_REGIONKEY on nation(N_REGIONKEY);
+
+create index index_PS_PARTKEY on partsupp(PS_PARTKEY);
+create index index_PS_SUPPKEY on partsupp(PS_SUPPKEY);
+

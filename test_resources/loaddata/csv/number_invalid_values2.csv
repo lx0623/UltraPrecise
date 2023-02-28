@@ -1,0 +1,5 @@
+create table t_number_invalid_values2( f1 tinyint null, f2 smallint null, f3 int null, f4 bigint null, f5 float null, f6 double null, f7 decimal null, f8 bool null );
+load data infile '/path/to/csv' into table t_number_invalid_values2 fields terminated by ',' ignore 2 lines;
+1a,1a,1a,1a,1a,1a,1a,1a
+1,1,1,1,1,1,1,1
+128,1,1,1,1,1,1,1

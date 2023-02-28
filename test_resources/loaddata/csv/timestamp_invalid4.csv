@@ -1,0 +1,4 @@
+create table t_timestamp_invalid4( f1 timestamp not null );
+load data infile '' into table t_timestamp_invalid4 fields terminated by ',' ignore 2 lines;
+2020-02-31 11:11:11
+2020-01-01 11:11:11

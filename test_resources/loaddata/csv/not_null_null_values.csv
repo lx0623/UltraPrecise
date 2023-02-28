@@ -1,0 +1,4 @@
+create table t_not_null_null_values( f1 tinyint not null, f2 smallint not null, f3 int not null, f4 bigint not null, f5 float not null, f6 double not null, f7 decimal not null, f8 char(64) not null, f9 bool not null );
+load data infile '/path/to/csv' into table t_not_null_null_values fields terminated by ',' ignore 2 lines;
+\N,\N,\N,\N,\N,\N,\N,\N,\N
+1,1,1,1,1,1,1,1,1

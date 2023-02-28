@@ -1,0 +1,4 @@
+comp_err: tool for generating binary errmsg-utf8.sys file from text file errmsg-utf8.txt.
+Usage:
+    mkdir output
+    ./comp_err -F ./errmsg-utf8.txt -D ./output/

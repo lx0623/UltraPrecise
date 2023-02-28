@@ -1,0 +1,7 @@
+create table t_null_enclosed(f1 int, f2 char(64));
+load data infile '/path/to/null_enclosed.csv' into table t_null_enclosed fields enclosed by '"' ignore 2 lines;
+\N	\N
+NULL	NULL
+NULL	"NULL"
+2	"aaa"
+3	bbb

@@ -1,0 +1,1428 @@
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from query
+[ RUN      ] query.q_all
+-------------------------------------------------------------------------------------------------------1
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/1.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(LINEITEM).(L_RETURNFLAG)))
+, ((ColumnShell:(LINEITEM).(L_LINESTATUS)))
+, ([SQLFunction:(SUM)]((ColumnShell:(LINEITEM).(L_QUANTITY)))) AS SUM_QTY
+, ([SQLFunction:(SUM)]((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)))) AS SUM_BASE_PRICE
+, ([SQLFunction:(SUM)](((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT))))))) AS SUM_DISC_PRICE
+, ([SQLFunction:(SUM)]((((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT))))) + (((1) + (ColumnShell:(LINEITEM).(L_TAX))))))) AS SUM_CHARGE
+, ([SQLFunction:(AVG)]((ColumnShell:(LINEITEM).(L_QUANTITY)))) AS AVG_QTY
+, ([SQLFunction:(AVG)]((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)))) AS AVG_PRICE
+, ([SQLFunction:(AVG)]((ColumnShell:(LINEITEM).(L_DISCOUNT)))) AS AVG_DISC
+, ([SQLFunction:(COUNT)]((0), (*))) AS COUNT_ORDER
+, ]		 [ !(0) lineitem , l_returnflag! ; !(1) lineitem , l_linestatus! ; !(2) nameless , sum_qty! ; !(3) nameless , sum_base_price! ; !(4) nameless , sum_disc_price! ; !(5) nameless , sum_charge! ; !(6) nameless , avg_qty! ; !(7) nameless , avg_price! ; !(8) nameless , avg_disc! ; !(9) nameless , count_order! ;] 		--[ ]-- 		:[LINEITEM, ]
+
+----    SortNode: [((ColumnShell:(LINEITEM).(L_RETURNFLAG))) ASC, ((ColumnShell:(LINEITEM).(L_LINESTATUS))) ASC, ]		 [ !(0) lineitem , l_returnflag! ; !(1) lineitem , l_linestatus! ; !(2) nameless , sum_qty! ; !(3) nameless , sum_base_price! ; !(4) nameless , sum_disc_price! ; !(5) nameless , sum_charge! ; !(6) nameless , avg_qty! ; !(7) nameless , avg_price! ; !(8) nameless , avg_disc! ; !(9) nameless , count_order! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_RETURNFLAG)>>1; 1  ColumnShell:(LINEITEM).(L_LINESTATUS)>>2; ]-- 		:[LINEITEM, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(LINEITEM).(L_RETURNFLAG))   ,1:   (ColumnShell:(LINEITEM).(L_LINESTATUS))   ,]		 [ !(0) lineitem , l_returnflag! ; !(1) lineitem , l_linestatus! ; !(2) nameless , sum_qty! ; !(3) nameless , sum_base_price! ; !(4) nameless , sum_disc_price! ; !(5) nameless , sum_charge! ; !(6) nameless , avg_qty! ; !(7) nameless , avg_price! ; !(8) nameless , avg_disc! ; !(9) nameless , count_order! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_RETURNFLAG)>>1; 1  ColumnShell:(LINEITEM).(L_LINESTATUS)>>2; 2  ColumnShell:(LINEITEM).(L_QUANTITY)>>3; 3  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>4; 4  ColumnShell:(LINEITEM).(L_DISCOUNT)>>5; 5  ColumnShell:(LINEITEM).(L_TAX)>>6; ]-- 		:[LINEITEM, ]
+
+------------    FilterNode:[((ColumnShell:(LINEITEM).(L_SHIPDATE)) <= ("1998-08-01"))]		 [ !(0) lineitem , l_returnflag! ; !(1) lineitem , l_linestatus! ; !(2) lineitem , l_quantity! ; !(3) lineitem , l_extendedprice! ; !(4) lineitem , l_discount! ; !(5) lineitem , l_tax! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_RETURNFLAG)>>1; 1  ColumnShell:(LINEITEM).(L_LINESTATUS)>>2; 2  ColumnShell:(LINEITEM).(L_QUANTITY)>>3; 3  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>4; 4  ColumnShell:(LINEITEM).(L_DISCOUNT)>>5; 5  ColumnShell:(LINEITEM).(L_TAX)>>6; 6  ColumnShell:(LINEITEM).(L_SHIPDATE)>>7; ]-- 		:[LINEITEM, ]
+
+----------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_returnflag! ; !(1) lineitem , l_linestatus! ; !(2) lineitem , l_quantity! ; !(3) lineitem , l_extendedprice! ; !(4) lineitem , l_discount! ; !(5) lineitem , l_tax! ; !(6) lineitem , l_shipdate! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_RETURNFLAG)>>9; 1  ColumnShell:(LINEITEM).(L_LINESTATUS)>>10; 2  ColumnShell:(LINEITEM).(L_QUANTITY)>>5; 3  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 4  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 5  ColumnShell:(LINEITEM).(L_TAX)>>8; 6  ColumnShell:(LINEITEM).(L_SHIPDATE)>>11; ]-- 		:[LINEITEM, ]
+-------------------------------------------------------------------------------------------------------2
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/2.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [NATION : REGION]
+brp->GetMyOutputName() : primary_table_name = [REGION : REGION]
+brp->GetMyOutputName() : primary_table_name = [SUPPLIER : NATION]
+brp->GetMyOutputName() : primary_table_name = [PARTSUPP : SUPPLIER]
+brp->GetMyOutputName() : primary_table_name = [NATION : REGION]
+brp->GetMyOutputName() : primary_table_name = [REGION : REGION]
+brp->GetMyOutputName() : primary_table_name = [SUPPLIER : NATION]
+brp->GetMyOutputName() : primary_table_name = [PARTSUPP : SUPPLIER]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [PART : PART]
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode: [ ((ColumnShell:(SUPPLIER).(S_ACCTBAL)))
+, ((ColumnShell:(SUPPLIER).(S_NAME)))
+, ((ColumnShell:(NATION).(N_NAME)))
+, ((ColumnShell:(PART).(P_PARTKEY)))
+, ((ColumnShell:(PART).(P_MFGR)))
+, ((ColumnShell:(SUPPLIER).(S_ADDRESS)))
+, ((ColumnShell:(SUPPLIER).(S_PHONE)))
+, ((ColumnShell:(SUPPLIER).(S_COMMENT)))
+, ]		 [ !(0) unnamedqueryresult , s_acctbal! ; !(1) unnamedqueryresult , s_name! ; !(2) unnamedqueryresult , n_name! ; !(3) unnamedqueryresult , p_partkey! ; !(4) unnamedqueryresult , p_mfgr! ; !(5) unnamedqueryresult , s_address! ; !(6) unnamedqueryresult , s_phone! ; !(7) unnamedqueryresult , s_comment! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_ACCTBAL)>>1; 1  ColumnShell:(SUPPLIER).(S_NAME)>>2; 2  ColumnShell:(NATION).(N_NAME)>>3; 3  ColumnShell:(PART).(P_PARTKEY)>>4; 4  ColumnShell:(PART).(P_MFGR)>>5; 5  ColumnShell:(SUPPLIER).(S_ADDRESS)>>6; 6  ColumnShell:(SUPPLIER).(S_PHONE)>>7; 7  ColumnShell:(SUPPLIER).(S_COMMENT)>>8; ]-- 		:[NATION, REGION, SUPPLIER, PARTSUPP, PART, ( %SUBQUERY% ) AS joinsubquery_19790609_1, ]
+
+----    FilterNode:[((ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)) = (ColumnShell:(joinsubquery_19790609_1).(agg_value_1)))]		 [ !(0) supplier , s_acctbal! ; !(1) supplier , s_name! ; !(2) nation , n_name! ; !(3) part , p_partkey! ; !(4) part , p_mfgr! ; !(5) supplier , s_address! ; !(6) supplier , s_phone! ; !(7) supplier , s_comment! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_ACCTBAL)>>1; 1  ColumnShell:(SUPPLIER).(S_NAME)>>2; 2  ColumnShell:(NATION).(N_NAME)>>3; 3  ColumnShell:(PART).(P_PARTKEY)>>4; 4  ColumnShell:(PART).(P_MFGR)>>5; 5  ColumnShell:(SUPPLIER).(S_ADDRESS)>>6; 6  ColumnShell:(SUPPLIER).(S_PHONE)>>7; 7  ColumnShell:(SUPPLIER).(S_COMMENT)>>8; 8  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>9; 9  ColumnShell:(joinsubquery_19790609_1).(agg_value_1)>>10; ]-- 		:[NATION, REGION, SUPPLIER, PARTSUPP, PART, ( %SUBQUERY% ) AS joinsubquery_19790609_1, ]
+
+--------    BinaryJoinNode<0:FALSE>:[Inner Join --- ((ColumnShell:(PART).(P_PARTKEY)) = (ColumnShell:(joinsubquery_19790609_1).(PS_PARTKEY)))]		 [ !(0) supplier , s_acctbal! ; !(1) supplier , s_name! ; !(2) nation , n_name! ; !(3) part , p_partkey! ; !(4) part , p_mfgr! ; !(5) supplier , s_address! ; !(6) supplier , s_phone! ; !(7) supplier , s_comment! ; !(8) partsupp , ps_supplycost! ; !(9) joinsubquery_19790609_1 , agg_value_1! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_ACCTBAL)>>1; 1  ColumnShell:(SUPPLIER).(S_NAME)>>2; 2  ColumnShell:(NATION).(N_NAME)>>3; 3  ColumnShell:(PART).(P_PARTKEY)>>4; 4  ColumnShell:(PART).(P_MFGR)>>5; 5  ColumnShell:(SUPPLIER).(S_ADDRESS)>>6; 6  ColumnShell:(SUPPLIER).(S_PHONE)>>7; 7  ColumnShell:(SUPPLIER).(S_COMMENT)>>8; 8  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>9; 9  ColumnShell:(joinsubquery_19790609_1).(agg_value_1)>>-1; 10  ColumnShell:(joinsubquery_19790609_1).(PS_PARTKEY)>>-2; ]-- 		:[NATION, REGION, SUPPLIER, PARTSUPP, PART, ( %SUBQUERY% ) AS joinsubquery_19790609_1, ]
+
+------------    BinaryJoinNode<1:FALSE>:[Inner Join --- ((ColumnShell:(PART).(P_PARTKEY)) = (ColumnShell:(PARTSUPP).(PS_PARTKEY)))]		 [ !(0) supplier , s_acctbal! ; !(1) supplier , s_name! ; !(2) nation , n_name! ; !(3) part , p_partkey! ; !(4) part , p_mfgr! ; !(5) supplier , s_address! ; !(6) supplier , s_phone! ; !(7) supplier , s_comment! ; !(8) partsupp , ps_supplycost! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_ACCTBAL)>>1; 1  ColumnShell:(SUPPLIER).(S_NAME)>>2; 2  ColumnShell:(NATION).(N_NAME)>>3; 3  ColumnShell:(PART).(P_PARTKEY)>>-1; 4  ColumnShell:(PART).(P_MFGR)>>-2; 5  ColumnShell:(SUPPLIER).(S_ADDRESS)>>4; 6  ColumnShell:(SUPPLIER).(S_PHONE)>>5; 7  ColumnShell:(SUPPLIER).(S_COMMENT)>>6; 8  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>7; 9  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>8; ]-- 		:[NATION, REGION, SUPPLIER, PARTSUPP, PART, ]
+
+----------------    BinaryJoinNode<1:FALSE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_SUPPKEY)) = (ColumnShell:(PARTSUPP).(PS_SUPPKEY)))]		 [ !(0) supplier , s_acctbal! ; !(1) supplier , s_name! ; !(2) nation , n_name! ; !(3) supplier , s_address! ; !(4) supplier , s_phone! ; !(5) supplier , s_comment! ; !(6) partsupp , ps_supplycost! ; !(7) partsupp , ps_partkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_ACCTBAL)>>1; 1  ColumnShell:(SUPPLIER).(S_NAME)>>2; 2  ColumnShell:(NATION).(N_NAME)>>3; 3  ColumnShell:(SUPPLIER).(S_ADDRESS)>>4; 4  ColumnShell:(SUPPLIER).(S_PHONE)>>5; 5  ColumnShell:(SUPPLIER).(S_COMMENT)>>6; 6  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>-1; 7  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>-2; 8  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>7; 9  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>-3; ]-- 		:[NATION, REGION, SUPPLIER, PARTSUPP, ]
+
+--------------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_NATIONKEY)) = (ColumnShell:(NATION).(N_NATIONKEY)))]		 [ !(0) supplier , s_acctbal! ; !(1) supplier , s_name! ; !(2) nation , n_name! ; !(3) supplier , s_address! ; !(4) supplier , s_phone! ; !(5) supplier , s_comment! ; !(6) supplier , s_suppkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_ACCTBAL)>>-1; 1  ColumnShell:(SUPPLIER).(S_NAME)>>-2; 2  ColumnShell:(NATION).(N_NAME)>>1; 3  ColumnShell:(SUPPLIER).(S_ADDRESS)>>-3; 4  ColumnShell:(SUPPLIER).(S_PHONE)>>-4; 5  ColumnShell:(SUPPLIER).(S_COMMENT)>>-5; 6  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>-6; 7  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>-7; 8  ColumnShell:(NATION).(N_NATIONKEY)>>2; ]-- 		:[NATION, REGION, SUPPLIER, ]
+
+------------------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(NATION).(N_REGIONKEY)) = (ColumnShell:(REGION).(R_REGIONKEY)))]		 [ !(0) nation , n_name! ; !(1) nation , n_nationkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NAME)>>1; 1  ColumnShell:(NATION).(N_NATIONKEY)>>2; 2  ColumnShell:(NATION).(N_REGIONKEY)>>3; 3  ColumnShell:(REGION).(R_REGIONKEY)>>-1; ]-- 		:[NATION, REGION, ]
+
+----------------------------    TableNode:[NATION]		 [ !(0) nation , n_name! ; !(1) nation , n_nationkey! ; !(2) nation , n_regionkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NAME)>>2; 1  ColumnShell:(NATION).(N_NATIONKEY)>>1; 2  ColumnShell:(NATION).(N_REGIONKEY)>>3; ]-- 		:[NATION, ]
+
+----------------------------    FilterNode:[((ColumnShell:(REGION).(R_NAME)) = ("EUROPE"))]		 [ !(0) region , r_regionkey! ;] 		--[ 0  ColumnShell:(REGION).(R_REGIONKEY)>>1; 1  ColumnShell:(REGION).(R_NAME)>>2; ]-- 		:[REGION, ]
+
+--------------------------------    TableNode:[REGION]		 [ !(0) region , r_regionkey! ; !(1) region , r_name! ;] 		--[ 0  ColumnShell:(REGION).(R_REGIONKEY)>>1; 1  ColumnShell:(REGION).(R_NAME)>>2; ]-- 		:[REGION, ]
+
+------------------------    TableNode:[SUPPLIER]		 [ !(0) supplier , s_acctbal! ; !(1) supplier , s_name! ; !(2) supplier , s_address! ; !(3) supplier , s_phone! ; !(4) supplier , s_comment! ; !(5) supplier , s_suppkey! ; !(6) supplier , s_nationkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_ACCTBAL)>>6; 1  ColumnShell:(SUPPLIER).(S_NAME)>>2; 2  ColumnShell:(SUPPLIER).(S_ADDRESS)>>3; 3  ColumnShell:(SUPPLIER).(S_PHONE)>>5; 4  ColumnShell:(SUPPLIER).(S_COMMENT)>>7; 5  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; 6  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; ]-- 		:[SUPPLIER, ]
+
+--------------------    TableNode:[PARTSUPP]		 [ !(0) partsupp , ps_supplycost! ; !(1) partsupp , ps_partkey! ; !(2) partsupp , ps_suppkey! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>4; 1  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>1; 2  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>2; ]-- 		:[PARTSUPP, ]
+
+----------------    FilterNode:[((ColumnShell:(PART).(P_SIZE)) = (1))]		 [ !(0) part , p_partkey! ; !(1) part , p_mfgr! ;] 		--[ 0  ColumnShell:(PART).(P_PARTKEY)>>1; 1  ColumnShell:(PART).(P_MFGR)>>2; 2  ColumnShell:(PART).(P_SIZE)>>3; ]-- 		:[PART, ]
+
+--------------------    TableNode:[PART]		 [ !(0) part , p_partkey! ; !(1) part , p_mfgr! ; !(2) part , p_size! ;] 		--[ 0  ColumnShell:(PART).(P_PARTKEY)>>1; 1  ColumnShell:(PART).(P_MFGR)>>3; 2  ColumnShell:(PART).(P_SIZE)>>6; ]-- 		:[PART, ]
+
+------------    ColumnNode(R): [ ([SQLFunction:(MIN)]((ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)))) AS agg_value_1
+, ((ColumnShell:(PARTSUPP).(PS_PARTKEY)))
+, ]		 [ !(0) joinsubquery_19790609_1 , agg_value_1! ; !(1) joinsubquery_19790609_1 , ps_partkey! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS joinsubquery_19790609_1, ]
+
+----------------    GroupbyNode: [0:   (ColumnShell:(PARTSUPP).(PS_PARTKEY))   ,]		 [ !(0) nameless , agg_value_1! ; !(1) partsupp , ps_partkey! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>1; 1  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>2; ]-- 		:[NATION, REGION, SUPPLIER, PARTSUPP, ]
+
+--------------------    BinaryJoinNode<1:FALSE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_SUPPKEY)) = (ColumnShell:(PARTSUPP).(PS_SUPPKEY)))]		 [ !(0) partsupp , ps_supplycost! ; !(1) partsupp , ps_partkey! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>-1; 1  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>-2; 2  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; 3  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>-3; ]-- 		:[NATION, REGION, SUPPLIER, PARTSUPP, ]
+
+------------------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_NATIONKEY)) = (ColumnShell:(NATION).(N_NATIONKEY)))]		 [ !(0) supplier , s_suppkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>-1; 1  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>-2; 2  ColumnShell:(NATION).(N_NATIONKEY)>>1; ]-- 		:[NATION, REGION, SUPPLIER, ]
+
+----------------------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(NATION).(N_REGIONKEY)) = (ColumnShell:(REGION).(R_REGIONKEY)))]		 [ !(0) nation , n_nationkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NATIONKEY)>>1; 1  ColumnShell:(NATION).(N_REGIONKEY)>>2; 2  ColumnShell:(REGION).(R_REGIONKEY)>>-1; ]-- 		:[NATION, REGION, ]
+
+--------------------------------    TableNode:[NATION]		 [ !(0) nation , n_nationkey! ; !(1) nation , n_regionkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NATIONKEY)>>1; 1  ColumnShell:(NATION).(N_REGIONKEY)>>3; ]-- 		:[NATION, ]
+
+--------------------------------    FilterNode:[((ColumnShell:(REGION).(R_NAME)) = ("EUROPE"))]		 [ !(0) region , r_regionkey! ;] 		--[ 0  ColumnShell:(REGION).(R_REGIONKEY)>>1; 1  ColumnShell:(REGION).(R_NAME)>>2; ]-- 		:[REGION, ]
+
+------------------------------------    TableNode:[REGION]		 [ !(0) region , r_regionkey! ; !(1) region , r_name! ;] 		--[ 0  ColumnShell:(REGION).(R_REGIONKEY)>>1; 1  ColumnShell:(REGION).(R_NAME)>>2; ]-- 		:[REGION, ]
+
+----------------------------    TableNode:[SUPPLIER]		 [ !(0) supplier , s_suppkey! ; !(1) supplier , s_nationkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; 1  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; ]-- 		:[SUPPLIER, ]
+
+------------------------    TableNode:[PARTSUPP]		 [ !(0) partsupp , ps_supplycost! ; !(1) partsupp , ps_partkey! ; !(2) partsupp , ps_suppkey! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>4; 1  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>1; 2  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>2; ]-- 		:[PARTSUPP, ]
+-------------------------------------------------------------------------------------------------------3
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/3.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [CUSTOMER : CUSTOMER]
+brp->GetMyOutputName() : primary_table_name = [ORDERS : CUSTOMER]
+brp->GetMyOutputName() : primary_table_name = [LINEITEM : ORDERS]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(LINEITEM).(L_ORDERKEY)))
+, ([SQLFunction:(SUM)](((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT))))))) AS REVENUE
+, ((ColumnShell:(ORDERS).(O_ORDERDATE)))
+, ((ColumnShell:(ORDERS).(O_SHIPPRIORITY)))
+, ]		 [ !(0) lineitem , l_orderkey! ; !(1) nameless , revenue! ; !(2) orders , o_orderdate! ; !(3) orders , o_shippriority! ;] 		--[ ]-- 		:[CUSTOMER, ORDERS, LINEITEM, ]
+
+----    SortNode: [((ColumnShell:(!-!SELECT_ALIAS!-!).(REVENUE))) DESC, ((ColumnShell:(ORDERS).(O_ORDERDATE))) ASC, ]		 [ !(0) lineitem , l_orderkey! ; !(1) nameless , revenue! ; !(2) orders , o_orderdate! ; !(3) orders , o_shippriority! ;] 		--[ 0  ColumnShell:(!-!SELECT_ALIAS!-!).(REVENUE)>>2; 1  ColumnShell:(ORDERS).(O_ORDERDATE)>>3; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(LINEITEM).(L_ORDERKEY))   ,1:   (ColumnShell:(ORDERS).(O_ORDERDATE))   ,2:   (ColumnShell:(ORDERS).(O_SHIPPRIORITY))   ,]		 [ !(0) lineitem , l_orderkey! ; !(1) nameless , revenue! ; !(2) orders , o_orderdate! ; !(3) orders , o_shippriority! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_ORDERKEY)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(ORDERS).(O_ORDERDATE)>>4; 4  ColumnShell:(ORDERS).(O_SHIPPRIORITY)>>5; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, ]
+
+------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(LINEITEM).(L_ORDERKEY)) = (ColumnShell:(ORDERS).(O_ORDERKEY)))]		 [ !(0) lineitem , l_orderkey! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) orders , o_orderdate! ; !(4) orders , o_shippriority! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_ORDERKEY)>>-1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>-2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>-3; 3  ColumnShell:(ORDERS).(O_ORDERDATE)>>1; 4  ColumnShell:(ORDERS).(O_SHIPPRIORITY)>>2; 5  ColumnShell:(ORDERS).(O_ORDERKEY)>>3; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, ]
+
+----------------    BinaryJoinNode<1:FALSE>:[Inner Join --- ((ColumnShell:(CUSTOMER).(C_CUSTKEY)) = (ColumnShell:(ORDERS).(O_CUSTKEY)))]		 [ !(0) orders , o_orderdate! ; !(1) orders , o_shippriority! ; !(2) orders , o_orderkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>-1; 1  ColumnShell:(ORDERS).(O_SHIPPRIORITY)>>-2; 2  ColumnShell:(ORDERS).(O_ORDERKEY)>>-3; 3  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; 4  ColumnShell:(ORDERS).(O_CUSTKEY)>>-4; ]-- 		:[CUSTOMER, ORDERS, ]
+
+--------------------    FilterNode:[((ColumnShell:(CUSTOMER).(C_MKTSEGMENT)) = ("FURNITURE"))]		 [ !(0) customer , c_custkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; 1  ColumnShell:(CUSTOMER).(C_MKTSEGMENT)>>2; ]-- 		:[CUSTOMER, ]
+
+------------------------    TableNode:[CUSTOMER]		 [ !(0) customer , c_custkey! ; !(1) customer , c_mktsegment! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; 1  ColumnShell:(CUSTOMER).(C_MKTSEGMENT)>>7; ]-- 		:[CUSTOMER, ]
+
+--------------------    FilterNode:[((ColumnShell:(ORDERS).(O_ORDERDATE)) < ("1995-03-20"))]		 [ !(0) orders , o_orderdate! ; !(1) orders , o_shippriority! ; !(2) orders , o_orderkey! ; !(3) orders , o_custkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>1; 1  ColumnShell:(ORDERS).(O_SHIPPRIORITY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERKEY)>>3; 3  ColumnShell:(ORDERS).(O_CUSTKEY)>>4; ]-- 		:[ORDERS, ]
+
+------------------------    TableNode:[ORDERS]		 [ !(0) orders , o_orderdate! ; !(1) orders , o_shippriority! ; !(2) orders , o_orderkey! ; !(3) orders , o_custkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>5; 1  ColumnShell:(ORDERS).(O_SHIPPRIORITY)>>8; 2  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 3  ColumnShell:(ORDERS).(O_CUSTKEY)>>2; ]-- 		:[ORDERS, ]
+
+----------------    FilterNode:[((ColumnShell:(LINEITEM).(L_SHIPDATE)) > ("1995-03-20"))]		 [ !(0) lineitem , l_orderkey! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_ORDERKEY)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(LINEITEM).(L_SHIPDATE)>>4; ]-- 		:[LINEITEM, ]
+
+--------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_orderkey! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) lineitem , l_shipdate! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_ORDERKEY)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 3  ColumnShell:(LINEITEM).(L_SHIPDATE)>>11; ]-- 		:[LINEITEM, ]
+-------------------------------------------------------------------------------------------------------4
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/4.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(ORDERS).(O_ORDERPRIORITY)))
+, ([SQLFunction:(COUNT)]((0), (*))) AS ORDER_COUNT
+, ]		 [ !(0) orders , o_orderpriority! ; !(1) nameless , order_count! ;] 		--[ ]-- 		:[ORDERS, LINEITEM AS LINEITEM[197906090], ]
+
+----    SortNode: [((ColumnShell:(ORDERS).(O_ORDERPRIORITY))) ASC, ]		 [ !(0) orders , o_orderpriority! ; !(1) nameless , order_count! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERPRIORITY)>>1; ]-- 		:[ORDERS, LINEITEM AS LINEITEM[197906090], ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(ORDERS).(O_ORDERPRIORITY))   ,]		 [ !(0) orders , o_orderpriority! ; !(1) nameless , order_count! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERPRIORITY)>>1; ]-- 		:[ORDERS, LINEITEM AS LINEITEM[197906090], ]
+
+------------    BinaryJoinNode<0:FALSE>:[Semi Join --- ((ColumnShell:(LINEITEM[197906090]).(L_ORDERKEY)) = (ColumnShell:(ORDERS).(O_ORDERKEY)))]		 [ !(0) orders , o_orderpriority! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERPRIORITY)>>1; 1  ColumnShell:(LINEITEM[197906090]).(L_ORDERKEY)>>-1; 2  ColumnShell:(ORDERS).(O_ORDERKEY)>>2; ]-- 		:[ORDERS, LINEITEM AS LINEITEM[197906090], ]
+
+----------------    FilterNode:[(((ColumnShell:(ORDERS).(O_ORDERDATE)) >= ("1993-10-01")) and ((ColumnShell:(ORDERS).(O_ORDERDATE)) < ("1994-01-01")))]		 [ !(0) orders , o_orderpriority! ; !(1) orders , o_orderkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERPRIORITY)>>1; 1  ColumnShell:(ORDERS).(O_ORDERKEY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERDATE)>>3; ]-- 		:[ORDERS, ]
+
+--------------------    TableNode:[ORDERS]		 [ !(0) orders , o_orderpriority! ; !(1) orders , o_orderkey! ; !(2) orders , o_orderdate! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERPRIORITY)>>6; 1  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 2  ColumnShell:(ORDERS).(O_ORDERDATE)>>5; ]-- 		:[ORDERS, ]
+
+----------------    FilterNode:[((ColumnShell:(LINEITEM[197906090]).(L_COMMITDATE)) < (ColumnShell:(LINEITEM[197906090]).(L_RECEIPTDATE)))]		 [ !(0) lineitem[197906090] , l_orderkey! ;] 		--[ 0  ColumnShell:(LINEITEM[197906090]).(L_ORDERKEY)>>1; 1  ColumnShell:(LINEITEM[197906090]).(L_COMMITDATE)>>2; 2  ColumnShell:(LINEITEM[197906090]).(L_RECEIPTDATE)>>3; ]-- 		:[LINEITEM AS LINEITEM[197906090], ]
+
+--------------------    TableNode:[LINEITEM AS LINEITEM[197906090]]		 [ !(0) lineitem[197906090] , l_orderkey! ; !(1) lineitem[197906090] , l_commitdate! ; !(2) lineitem[197906090] , l_receiptdate! ;] 		--[ 0  ColumnShell:(LINEITEM[197906090]).(L_ORDERKEY)>>1; 1  ColumnShell:(LINEITEM[197906090]).(L_COMMITDATE)>>12; 2  ColumnShell:(LINEITEM[197906090]).(L_RECEIPTDATE)>>13; ]-- 		:[LINEITEM AS LINEITEM[197906090], ]
+-------------------------------------------------------------------------------------------------------5
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/5.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [CUSTOMER : CUSTOMER]
+brp->GetMyOutputName() : primary_table_name = [ORDERS : CUSTOMER]
+brp->GetMyOutputName() : primary_table_name = [LINEITEM : ORDERS]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [SUPPLIER : SUPPLIER]
+brp->GetMyOutputName() : primary_table_name = [NATION : NATION]
+brp->GetMyOutputName() : primary_table_name = [REGION : REGION]
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(NATION).(N_NAME)))
+, ([SQLFunction:(SUM)](((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT))))))) AS REVENUE
+, ]		 [ !(0) nation , n_name! ; !(1) nameless , revenue! ;] 		--[ ]-- 		:[CUSTOMER, ORDERS, LINEITEM, SUPPLIER, NATION, REGION, ]
+
+----    SortNode: [((ColumnShell:(!-!SELECT_ALIAS!-!).(REVENUE))) DESC, ]		 [ !(0) nation , n_name! ; !(1) nameless , revenue! ;] 		--[ 0  ColumnShell:(!-!SELECT_ALIAS!-!).(REVENUE)>>2; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, SUPPLIER, NATION, REGION, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(NATION).(N_NAME))   ,]		 [ !(0) nation , n_name! ; !(1) nameless , revenue! ;] 		--[ 0  ColumnShell:(NATION).(N_NAME)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, SUPPLIER, NATION, REGION, ]
+
+------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(NATION).(N_REGIONKEY)) = (ColumnShell:(REGION).(R_REGIONKEY)))]		 [ !(0) nation , n_name! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ;] 		--[ 0  ColumnShell:(NATION).(N_NAME)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(NATION).(N_REGIONKEY)>>4; 4  ColumnShell:(REGION).(R_REGIONKEY)>>-1; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, SUPPLIER, NATION, REGION, ]
+
+----------------    BinaryJoinNode<-1:TRUE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_NATIONKEY)) = (ColumnShell:(NATION).(N_NATIONKEY)))]		 [ !(0) nation , n_name! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) nation , n_regionkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NAME)>>-1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 3  ColumnShell:(NATION).(N_REGIONKEY)>>-2; 4  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>3; 5  ColumnShell:(NATION).(N_NATIONKEY)>>-3; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, SUPPLIER, NATION, ]
+
+--------------------    FilterNode:[((ColumnShell:(CUSTOMER).(C_NATIONKEY)) = (ColumnShell:(SUPPLIER).(S_NATIONKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) supplier , s_nationkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>3; 3  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>4; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, SUPPLIER, ]
+
+------------------------    BinaryJoinNode<-1:TRUE>:[Inner Join --- ((ColumnShell:(LINEITEM).(L_SUPPKEY)) = (ColumnShell:(SUPPLIER).(S_SUPPKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) supplier , s_nationkey! ; !(3) customer , c_nationkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>-1; 3  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>3; 4  ColumnShell:(LINEITEM).(L_SUPPKEY)>>4; 5  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>-2; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, SUPPLIER, ]
+
+----------------------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(LINEITEM).(L_ORDERKEY)) = (ColumnShell:(ORDERS).(O_ORDERKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) customer , c_nationkey! ; !(3) lineitem , l_suppkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>-1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>-2; 2  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>1; 3  ColumnShell:(LINEITEM).(L_SUPPKEY)>>-3; 4  ColumnShell:(LINEITEM).(L_ORDERKEY)>>-4; 5  ColumnShell:(ORDERS).(O_ORDERKEY)>>2; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, ]
+
+--------------------------------    BinaryJoinNode<1:TRUE>:[Inner Join --- ((ColumnShell:(CUSTOMER).(C_CUSTKEY)) = (ColumnShell:(ORDERS).(O_CUSTKEY)))]		 [ !(0) customer , c_nationkey! ; !(1) orders , o_orderkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>1; 1  ColumnShell:(ORDERS).(O_ORDERKEY)>>-1; 2  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>2; 3  ColumnShell:(ORDERS).(O_CUSTKEY)>>-2; ]-- 		:[CUSTOMER, ORDERS, ]
+
+------------------------------------    TableNode:[CUSTOMER]		 [ !(0) customer , c_nationkey! ; !(1) customer , c_custkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>4; 1  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; ]-- 		:[CUSTOMER, ]
+
+------------------------------------    FilterNode:[(((ColumnShell:(ORDERS).(O_ORDERDATE)) >= ("1995-01-01")) and ((ColumnShell:(ORDERS).(O_ORDERDATE)) < ("1996-01-01")))]		 [ !(0) orders , o_orderkey! ; !(1) orders , o_custkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 1  ColumnShell:(ORDERS).(O_CUSTKEY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERDATE)>>3; ]-- 		:[ORDERS, ]
+
+----------------------------------------    TableNode:[ORDERS]		 [ !(0) orders , o_orderkey! ; !(1) orders , o_custkey! ; !(2) orders , o_orderdate! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 1  ColumnShell:(ORDERS).(O_CUSTKEY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERDATE)>>5; ]-- 		:[ORDERS, ]
+
+--------------------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_suppkey! ; !(3) lineitem , l_orderkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 2  ColumnShell:(LINEITEM).(L_SUPPKEY)>>3; 3  ColumnShell:(LINEITEM).(L_ORDERKEY)>>1; ]-- 		:[LINEITEM, ]
+
+----------------------------    TableNode:[SUPPLIER]		 [ !(0) supplier , s_nationkey! ; !(1) supplier , s_suppkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 1  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; ]-- 		:[SUPPLIER, ]
+
+--------------------    TableNode:[NATION]		 [ !(0) nation , n_name! ; !(1) nation , n_regionkey! ; !(2) nation , n_nationkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NAME)>>2; 1  ColumnShell:(NATION).(N_REGIONKEY)>>3; 2  ColumnShell:(NATION).(N_NATIONKEY)>>1; ]-- 		:[NATION, ]
+
+----------------    FilterNode:[((ColumnShell:(REGION).(R_NAME)) = ("AFRICA"))]		 [ !(0) region , r_regionkey! ;] 		--[ 0  ColumnShell:(REGION).(R_REGIONKEY)>>1; 1  ColumnShell:(REGION).(R_NAME)>>2; ]-- 		:[REGION, ]
+
+--------------------    TableNode:[REGION]		 [ !(0) region , r_regionkey! ; !(1) region , r_name! ;] 		--[ 0  ColumnShell:(REGION).(R_REGIONKEY)>>1; 1  ColumnShell:(REGION).(R_NAME)>>2; ]-- 		:[REGION, ]
+-------------------------------------------------------------------------------------------------------6
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/6.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ([SQLFunction:(SUM)](((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (ColumnShell:(LINEITEM).(L_DISCOUNT))))) AS REVENUE
+, ]		 [ !(0) nameless , revenue! ;] 		--[ ]-- 		:[LINEITEM, ]
+
+----    GroupbyNode: []		 [ !(0) nameless , revenue! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; ]-- 		:[LINEITEM, ]
+
+--------    FilterNode:[(((((ColumnShell:(LINEITEM).(L_SHIPDATE)) >= ("1995-01-01")) and ((ColumnShell:(LINEITEM).(L_SHIPDATE)) < ("1996-01-01"))) and (ColumnShell:(LINEITEM).(L_DISCOUNT)) between ((0.050000) - (0.010000)) and ((0.050000) + (0.010000))) and ((ColumnShell:(LINEITEM).(L_QUANTITY)) < (25)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(LINEITEM).(L_SHIPDATE)>>3; 3  ColumnShell:(LINEITEM).(L_QUANTITY)>>4; ]-- 		:[LINEITEM, ]
+
+------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_shipdate! ; !(3) lineitem , l_quantity! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 2  ColumnShell:(LINEITEM).(L_SHIPDATE)>>11; 3  ColumnShell:(LINEITEM).(L_QUANTITY)>>5; ]-- 		:[LINEITEM, ]
+-------------------------------------------------------------------------------------------------------7
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/7.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [SUPPLIER : SUPPLIER]
+brp->GetMyOutputName() : primary_table_name = [LINEITEM : SUPPLIER]
+brp->GetMyOutputName() : primary_table_name = [ORDERS : ORDERS]
+brp->GetMyOutputName() : primary_table_name = [CUSTOMER : CUSTOMER]
+brp->GetMyOutputName() : primary_table_name = [N1 : N1]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [N2 : N2]
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(SHIPPING).(SUPP_NATION)))
+, ((ColumnShell:(SHIPPING).(CUST_NATION)))
+, ((ColumnShell:(SHIPPING).(L_YEAR)))
+, ([SQLFunction:(SUM)]((ColumnShell:(SHIPPING).(VOLUME)))) AS REVENUE
+, ]		 [ !(0) shipping , supp_nation! ; !(1) shipping , cust_nation! ; !(2) shipping , l_year! ; !(3) nameless , revenue! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS SHIPPING, ]
+
+----    SortNode: [((ColumnShell:(SHIPPING).(SUPP_NATION))) ASC, ((ColumnShell:(SHIPPING).(CUST_NATION))) ASC, ((ColumnShell:(SHIPPING).(L_YEAR))) ASC, ]		 [ !(0) shipping , supp_nation! ; !(1) shipping , cust_nation! ; !(2) shipping , l_year! ; !(3) nameless , revenue! ;] 		--[ 0  ColumnShell:(SHIPPING).(SUPP_NATION)>>1; 1  ColumnShell:(SHIPPING).(CUST_NATION)>>2; 2  ColumnShell:(SHIPPING).(L_YEAR)>>3; ]-- 		:[( %SUBQUERY% ) AS SHIPPING, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(SHIPPING).(SUPP_NATION))   ,1:   (ColumnShell:(SHIPPING).(CUST_NATION))   ,2:   (ColumnShell:(SHIPPING).(L_YEAR))   ,]		 [ !(0) shipping , supp_nation! ; !(1) shipping , cust_nation! ; !(2) shipping , l_year! ; !(3) nameless , revenue! ;] 		--[ 0  ColumnShell:(SHIPPING).(SUPP_NATION)>>1; 1  ColumnShell:(SHIPPING).(CUST_NATION)>>2; 2  ColumnShell:(SHIPPING).(L_YEAR)>>3; 3  ColumnShell:(SHIPPING).(VOLUME)>>4; ]-- 		:[( %SUBQUERY% ) AS SHIPPING, ]
+
+------------    ColumnNode: [ ((ColumnShell:(N1).(N_NAME))) AS SUPP_NATION
+, ((ColumnShell:(N2).(N_NAME))) AS CUST_NATION
+, ([SQLFunction:(EXTRACT)](("year"), (ColumnShell:(LINEITEM).(L_SHIPDATE)))) AS L_YEAR
+, (((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT)))))) AS VOLUME
+, ]		 [ !(0) shipping , supp_nation! ; !(1) shipping , cust_nation! ; !(2) shipping , l_year! ; !(3) shipping , volume! ;] 		--[ 0  ColumnShell:(N1).(N_NAME)>>1; 1  ColumnShell:(N2).(N_NAME)>>2; 2  ColumnShell:(LINEITEM).(L_SHIPDATE)>>3; 3  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>4; 4  ColumnShell:(LINEITEM).(L_DISCOUNT)>>5; ]-- 		:[SUPPLIER, LINEITEM, ORDERS, CUSTOMER, NATION AS N1, NATION AS N2, ]
+
+----------------    FilterNode:[(((((ColumnShell:(N1).(N_NAME)) = ("IRAQ")) and ((ColumnShell:(N2).(N_NAME)) = ("KENYA")))) or ((((ColumnShell:(N1).(N_NAME)) = ("KENYA")) and ((ColumnShell:(N2).(N_NAME)) = ("IRAQ")))))]		 [ !(0) n1 , n_name! ; !(1) n2 , n_name! ; !(2) lineitem , l_shipdate! ; !(3) lineitem , l_extendedprice! ; !(4) lineitem , l_discount! ;] 		--[ 0  ColumnShell:(N1).(N_NAME)>>1; 1  ColumnShell:(N2).(N_NAME)>>2; 2  ColumnShell:(LINEITEM).(L_SHIPDATE)>>3; 3  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>4; 4  ColumnShell:(LINEITEM).(L_DISCOUNT)>>5; ]-- 		:[SUPPLIER, LINEITEM, ORDERS, CUSTOMER, NATION AS N1, NATION AS N2, ]
+
+--------------------    BinaryJoinNode<-1:TRUE>:[Inner Join --- ((ColumnShell:(CUSTOMER).(C_NATIONKEY)) = (ColumnShell:(N2).(N_NATIONKEY)))]		 [ !(0) n1 , n_name! ; !(1) n2 , n_name! ; !(2) lineitem , l_shipdate! ; !(3) lineitem , l_extendedprice! ; !(4) lineitem , l_discount! ;] 		--[ 0  ColumnShell:(N1).(N_NAME)>>1; 1  ColumnShell:(N2).(N_NAME)>>-1; 2  ColumnShell:(LINEITEM).(L_SHIPDATE)>>2; 3  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>3; 4  ColumnShell:(LINEITEM).(L_DISCOUNT)>>4; 5  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>5; 6  ColumnShell:(N2).(N_NATIONKEY)>>-2; ]-- 		:[SUPPLIER, LINEITEM, ORDERS, CUSTOMER, NATION AS N1, NATION AS N2, ]
+
+------------------------    BinaryJoinNode<-1:TRUE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_NATIONKEY)) = (ColumnShell:(N1).(N_NATIONKEY)))]		 [ !(0) n1 , n_name! ; !(1) lineitem , l_shipdate! ; !(2) lineitem , l_extendedprice! ; !(3) lineitem , l_discount! ; !(4) customer , c_nationkey! ;] 		--[ 0  ColumnShell:(N1).(N_NAME)>>-1; 1  ColumnShell:(LINEITEM).(L_SHIPDATE)>>1; 2  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 3  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 4  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>4; 5  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>5; 6  ColumnShell:(N1).(N_NATIONKEY)>>-2; ]-- 		:[SUPPLIER, LINEITEM, ORDERS, CUSTOMER, NATION AS N1, ]
+
+----------------------------    BinaryJoinNode<1:TRUE>:[Inner Join --- ((ColumnShell:(CUSTOMER).(C_CUSTKEY)) = (ColumnShell:(ORDERS).(O_CUSTKEY)))]		 [ !(0) lineitem , l_shipdate! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) customer , c_nationkey! ; !(4) supplier , s_nationkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SHIPDATE)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>-1; 4  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 5  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>-2; 6  ColumnShell:(ORDERS).(O_CUSTKEY)>>5; ]-- 		:[SUPPLIER, LINEITEM, ORDERS, CUSTOMER, ]
+
+--------------------------------    BinaryJoinNode<1:TRUE>:[Inner Join --- ((ColumnShell:(ORDERS).(O_ORDERKEY)) = (ColumnShell:(LINEITEM).(L_ORDERKEY)))]		 [ !(0) lineitem , l_shipdate! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) supplier , s_nationkey! ; !(4) orders , o_custkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SHIPDATE)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 4  ColumnShell:(ORDERS).(O_CUSTKEY)>>-1; 5  ColumnShell:(ORDERS).(O_ORDERKEY)>>-2; 6  ColumnShell:(LINEITEM).(L_ORDERKEY)>>5; ]-- 		:[SUPPLIER, LINEITEM, ORDERS, ]
+
+------------------------------------    BinaryJoinNode<1:TRUE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_SUPPKEY)) = (ColumnShell:(LINEITEM).(L_SUPPKEY)))]		 [ !(0) lineitem , l_shipdate! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) supplier , s_nationkey! ; !(4) lineitem , l_orderkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SHIPDATE)>>-1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>-2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>-3; 3  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>1; 4  ColumnShell:(LINEITEM).(L_ORDERKEY)>>-4; 5  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>2; 6  ColumnShell:(LINEITEM).(L_SUPPKEY)>>-5; ]-- 		:[SUPPLIER, LINEITEM, ]
+
+----------------------------------------    TableNode:[SUPPLIER]		 [ !(0) supplier , s_nationkey! ; !(1) supplier , s_suppkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 1  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; ]-- 		:[SUPPLIER, ]
+
+----------------------------------------    FilterNode:[(ColumnShell:(LINEITEM).(L_SHIPDATE)) between ("1995-01-01") and ("1996-12-31")]		 [ !(0) lineitem , l_shipdate! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) lineitem , l_orderkey! ; !(4) lineitem , l_suppkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SHIPDATE)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(LINEITEM).(L_ORDERKEY)>>4; 4  ColumnShell:(LINEITEM).(L_SUPPKEY)>>5; ]-- 		:[LINEITEM, ]
+
+--------------------------------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_shipdate! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) lineitem , l_orderkey! ; !(4) lineitem , l_suppkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SHIPDATE)>>11; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 3  ColumnShell:(LINEITEM).(L_ORDERKEY)>>1; 4  ColumnShell:(LINEITEM).(L_SUPPKEY)>>3; ]-- 		:[LINEITEM, ]
+
+------------------------------------    TableNode:[ORDERS]		 [ !(0) orders , o_custkey! ; !(1) orders , o_orderkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_CUSTKEY)>>2; 1  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; ]-- 		:[ORDERS, ]
+
+--------------------------------    TableNode:[CUSTOMER]		 [ !(0) customer , c_nationkey! ; !(1) customer , c_custkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>4; 1  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; ]-- 		:[CUSTOMER, ]
+
+----------------------------    TableNode:[NATION AS N1]		 [ !(0) n1 , n_name! ; !(1) n1 , n_nationkey! ;] 		--[ 0  ColumnShell:(N1).(N_NAME)>>2; 1  ColumnShell:(N1).(N_NATIONKEY)>>1; ]-- 		:[NATION AS N1, ]
+
+------------------------    TableNode:[NATION AS N2]		 [ !(0) n2 , n_name! ; !(1) n2 , n_nationkey! ;] 		--[ 0  ColumnShell:(N2).(N_NAME)>>2; 1  ColumnShell:(N2).(N_NATIONKEY)>>1; ]-- 		:[NATION AS N2, ]
+-------------------------------------------------------------------------------------------------------8
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/8.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [PART : PART]
+brp->GetMyOutputName() : primary_table_name = [LINEITEM : PART]
+brp->GetMyOutputName() : primary_table_name = [SUPPLIER : SUPPLIER]
+brp->GetMyOutputName() : primary_table_name = [ORDERS : ORDERS]
+brp->GetMyOutputName() : primary_table_name = [CUSTOMER : CUSTOMER]
+brp->GetMyOutputName() : primary_table_name = [N1 : N1]
+brp->GetMyOutputName() : primary_table_name = [N2 : N2]
+brp->GetMyOutputName() : primary_table_name = [REGION : REGION]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(ALL_NATIONS).(O_YEAR)))
+, (([SQLFunction:(SUM)]((CASE  WHEN ((ColumnShell:(ALL_NATIONS).(NATION)) = ("KENYA")) THEN (ColumnShell:(ALL_NATIONS).(VOLUME)) ELSE (0))) / [SQLFunction:(SUM)]((ColumnShell:(ALL_NATIONS).(VOLUME))))) AS MKT_SHARE
+, ]		 [ !(0) all_nations , o_year! ; !(1) nameless , mkt_share! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS ALL_NATIONS, ]
+
+----    SortNode: [((ColumnShell:(ALL_NATIONS).(O_YEAR))) ASC, ]		 [ !(0) all_nations , o_year! ; !(1) nameless , mkt_share! ;] 		--[ 0  ColumnShell:(ALL_NATIONS).(O_YEAR)>>1; ]-- 		:[( %SUBQUERY% ) AS ALL_NATIONS, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(ALL_NATIONS).(O_YEAR))   ,]		 [ !(0) all_nations , o_year! ; !(1) nameless , mkt_share! ;] 		--[ 0  ColumnShell:(ALL_NATIONS).(O_YEAR)>>1; 1  ColumnShell:(ALL_NATIONS).(NATION)>>2; 2  ColumnShell:(ALL_NATIONS).(VOLUME)>>3; ]-- 		:[( %SUBQUERY% ) AS ALL_NATIONS, ]
+
+------------    ColumnNode: [ ([SQLFunction:(EXTRACT)](("year"), (ColumnShell:(ORDERS).(O_ORDERDATE)))) AS O_YEAR
+, (((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT)))))) AS VOLUME
+, ((ColumnShell:(N2).(N_NAME))) AS NATION
+, ]		 [ !(0) all_nations , o_year! ; !(1) all_nations , nation! ; !(2) all_nations , volume! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(N2).(N_NAME)>>4; ]-- 		:[( %SUBQUERY% ) AS ALL_NATIONS, ]
+
+----------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(N1).(N_REGIONKEY)) = (ColumnShell:(REGION).(R_REGIONKEY)))]		 [ !(0) orders , o_orderdate! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) n2 , n_name! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(N2).(N_NAME)>>4; 4  ColumnShell:(N1).(N_REGIONKEY)>>5; 5  ColumnShell:(REGION).(R_REGIONKEY)>>-1; ]-- 		:[PART, LINEITEM, SUPPLIER, ORDERS, CUSTOMER, NATION AS N1, NATION AS N2, REGION, ]
+
+--------------------    BinaryJoinNode<-1:TRUE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_NATIONKEY)) = (ColumnShell:(N2).(N_NATIONKEY)))]		 [ !(0) orders , o_orderdate! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) n2 , n_name! ; !(4) n1 , n_regionkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(N2).(N_NAME)>>-1; 4  ColumnShell:(N1).(N_REGIONKEY)>>4; 5  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>5; 6  ColumnShell:(N2).(N_NATIONKEY)>>-2; ]-- 		:[PART, LINEITEM, SUPPLIER, ORDERS, CUSTOMER, NATION AS N1, NATION AS N2, ]
+
+------------------------    BinaryJoinNode<-1:TRUE>:[Inner Join --- ((ColumnShell:(CUSTOMER).(C_NATIONKEY)) = (ColumnShell:(N1).(N_NATIONKEY)))]		 [ !(0) orders , o_orderdate! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) n1 , n_regionkey! ; !(4) supplier , s_nationkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(N1).(N_REGIONKEY)>>-1; 4  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 5  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>5; 6  ColumnShell:(N1).(N_NATIONKEY)>>-2; ]-- 		:[PART, LINEITEM, SUPPLIER, ORDERS, CUSTOMER, NATION AS N1, ]
+
+----------------------------    BinaryJoinNode<-1:TRUE>:[Inner Join --- ((ColumnShell:(ORDERS).(O_CUSTKEY)) = (ColumnShell:(CUSTOMER).(C_CUSTKEY)))]		 [ !(0) orders , o_orderdate! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) supplier , s_nationkey! ; !(4) customer , c_nationkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 4  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>-1; 5  ColumnShell:(ORDERS).(O_CUSTKEY)>>5; 6  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>-2; ]-- 		:[PART, LINEITEM, SUPPLIER, ORDERS, CUSTOMER, ]
+
+--------------------------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(LINEITEM).(L_ORDERKEY)) = (ColumnShell:(ORDERS).(O_ORDERKEY)))]		 [ !(0) orders , o_orderdate! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) supplier , s_nationkey! ; !(4) orders , o_custkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>-1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 3  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>3; 4  ColumnShell:(ORDERS).(O_CUSTKEY)>>-2; 5  ColumnShell:(LINEITEM).(L_ORDERKEY)>>4; 6  ColumnShell:(ORDERS).(O_ORDERKEY)>>-3; ]-- 		:[PART, LINEITEM, SUPPLIER, ORDERS, ]
+
+------------------------------------    BinaryJoinNode<1:TRUE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_SUPPKEY)) = (ColumnShell:(LINEITEM).(L_SUPPKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) supplier , s_nationkey! ; !(3) lineitem , l_orderkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>-1; 3  ColumnShell:(LINEITEM).(L_ORDERKEY)>>3; 4  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>-2; 5  ColumnShell:(LINEITEM).(L_SUPPKEY)>>4; ]-- 		:[PART, LINEITEM, SUPPLIER, ]
+
+----------------------------------------    BinaryJoinNode<1:FALSE>:[Inner Join --- ((ColumnShell:(PART).(P_PARTKEY)) = (ColumnShell:(LINEITEM).(L_PARTKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_orderkey! ; !(3) lineitem , l_suppkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>-1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>-2; 2  ColumnShell:(LINEITEM).(L_ORDERKEY)>>-3; 3  ColumnShell:(LINEITEM).(L_SUPPKEY)>>-4; 4  ColumnShell:(PART).(P_PARTKEY)>>1; 5  ColumnShell:(LINEITEM).(L_PARTKEY)>>-5; ]-- 		:[PART, LINEITEM, ]
+
+--------------------------------------------    FilterNode:[((ColumnShell:(PART).(P_TYPE)) = ("PROMO ANODIZED NICKEL"))]		 [ !(0) part , p_partkey! ;] 		--[ 0  ColumnShell:(PART).(P_PARTKEY)>>1; 1  ColumnShell:(PART).(P_TYPE)>>2; ]-- 		:[PART, ]
+
+------------------------------------------------    TableNode:[PART]		 [ !(0) part , p_partkey! ; !(1) part , p_type! ;] 		--[ 0  ColumnShell:(PART).(P_PARTKEY)>>1; 1  ColumnShell:(PART).(P_TYPE)>>5; ]-- 		:[PART, ]
+
+--------------------------------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_orderkey! ; !(3) lineitem , l_suppkey! ; !(4) lineitem , l_partkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 2  ColumnShell:(LINEITEM).(L_ORDERKEY)>>1; 3  ColumnShell:(LINEITEM).(L_SUPPKEY)>>3; 4  ColumnShell:(LINEITEM).(L_PARTKEY)>>2; ]-- 		:[LINEITEM, ]
+
+----------------------------------------    TableNode:[SUPPLIER]		 [ !(0) supplier , s_nationkey! ; !(1) supplier , s_suppkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 1  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; ]-- 		:[SUPPLIER, ]
+
+------------------------------------    FilterNode:[(ColumnShell:(ORDERS).(O_ORDERDATE)) between ("1995-01-01") and ("1996-12-31")]		 [ !(0) orders , o_orderdate! ; !(1) orders , o_custkey! ; !(2) orders , o_orderkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>1; 1  ColumnShell:(ORDERS).(O_CUSTKEY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERKEY)>>3; ]-- 		:[ORDERS, ]
+
+----------------------------------------    TableNode:[ORDERS]		 [ !(0) orders , o_orderdate! ; !(1) orders , o_custkey! ; !(2) orders , o_orderkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>5; 1  ColumnShell:(ORDERS).(O_CUSTKEY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; ]-- 		:[ORDERS, ]
+
+--------------------------------    TableNode:[CUSTOMER]		 [ !(0) customer , c_nationkey! ; !(1) customer , c_custkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>4; 1  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; ]-- 		:[CUSTOMER, ]
+
+----------------------------    TableNode:[NATION AS N1]		 [ !(0) n1 , n_regionkey! ; !(1) n1 , n_nationkey! ;] 		--[ 0  ColumnShell:(N1).(N_REGIONKEY)>>3; 1  ColumnShell:(N1).(N_NATIONKEY)>>1; ]-- 		:[NATION AS N1, ]
+
+------------------------    TableNode:[NATION AS N2]		 [ !(0) n2 , n_name! ; !(1) n2 , n_nationkey! ;] 		--[ 0  ColumnShell:(N2).(N_NAME)>>2; 1  ColumnShell:(N2).(N_NATIONKEY)>>1; ]-- 		:[NATION AS N2, ]
+
+--------------------    FilterNode:[((ColumnShell:(REGION).(R_NAME)) = ("AFRICA"))]		 [ !(0) region , r_regionkey! ;] 		--[ 0  ColumnShell:(REGION).(R_REGIONKEY)>>1; 1  ColumnShell:(REGION).(R_NAME)>>2; ]-- 		:[REGION, ]
+
+------------------------    TableNode:[REGION]		 [ !(0) region , r_regionkey! ; !(1) region , r_name! ;] 		--[ 0  ColumnShell:(REGION).(R_REGIONKEY)>>1; 1  ColumnShell:(REGION).(R_NAME)>>2; ]-- 		:[REGION, ]
+-------------------------------------------------------------------------------------------------------9
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/9.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [PART : PART]
+brp->GetMyOutputName() : primary_table_name = [LINEITEM : PART]
+brp->GetMyOutputName() : primary_table_name = [SUPPLIER : SUPPLIER]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(PROFIT).(NATION)))
+, ((ColumnShell:(PROFIT).(O_YEAR)))
+, ([SQLFunction:(SUM)]((ColumnShell:(PROFIT).(AMOUNT)))) AS SUM_PROFIT
+, ]		 [ !(0) profit , nation! ; !(1) profit , o_year! ; !(2) nameless , sum_profit! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS PROFIT, ]
+
+----    SortNode: [((ColumnShell:(PROFIT).(NATION))) ASC, ((ColumnShell:(PROFIT).(O_YEAR))) DESC, ]		 [ !(0) profit , nation! ; !(1) profit , o_year! ; !(2) nameless , sum_profit! ;] 		--[ 0  ColumnShell:(PROFIT).(NATION)>>1; 1  ColumnShell:(PROFIT).(O_YEAR)>>2; ]-- 		:[( %SUBQUERY% ) AS PROFIT, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(PROFIT).(NATION))   ,1:   (ColumnShell:(PROFIT).(O_YEAR))   ,]		 [ !(0) profit , nation! ; !(1) profit , o_year! ; !(2) nameless , sum_profit! ;] 		--[ 0  ColumnShell:(PROFIT).(NATION)>>1; 1  ColumnShell:(PROFIT).(O_YEAR)>>2; 2  ColumnShell:(PROFIT).(AMOUNT)>>3; ]-- 		:[( %SUBQUERY% ) AS PROFIT, ]
+
+------------    ColumnNode: [ ((ColumnShell:(NATION).(N_NAME))) AS NATION
+, ([SQLFunction:(EXTRACT)](("year"), (ColumnShell:(ORDERS).(O_ORDERDATE)))) AS O_YEAR
+, ((((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT))))) - ((ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)) + (ColumnShell:(LINEITEM).(L_QUANTITY))))) AS AMOUNT
+, ]		 [ !(0) profit , nation! ; !(1) profit , o_year! ; !(2) profit , amount! ;] 		--[ 0  ColumnShell:(NATION).(N_NAME)>>1; 1  ColumnShell:(ORDERS).(O_ORDERDATE)>>2; 2  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>3; 3  ColumnShell:(LINEITEM).(L_DISCOUNT)>>4; 4  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>5; 5  ColumnShell:(LINEITEM).(L_QUANTITY)>>6; ]-- 		:[PART, LINEITEM, SUPPLIER, PARTSUPP, ORDERS, NATION, ]
+
+----------------    BinaryJoinNode<0:FALSE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_NATIONKEY)) = (ColumnShell:(NATION).(N_NATIONKEY)))]		 [ !(0) nation , n_name! ; !(1) orders , o_orderdate! ; !(2) lineitem , l_extendedprice! ; !(3) lineitem , l_discount! ; !(4) partsupp , ps_supplycost! ; !(5) lineitem , l_quantity! ;] 		--[ 0  ColumnShell:(NATION).(N_NAME)>>-1; 1  ColumnShell:(ORDERS).(O_ORDERDATE)>>1; 2  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 3  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 4  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>4; 5  ColumnShell:(LINEITEM).(L_QUANTITY)>>5; 6  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>6; 7  ColumnShell:(NATION).(N_NATIONKEY)>>-2; ]-- 		:[PART, LINEITEM, SUPPLIER, PARTSUPP, ORDERS, NATION, ]
+
+--------------------    BinaryJoinNode<0:FALSE>:[Inner Join --- ((ColumnShell:(ORDERS).(O_ORDERKEY)) = (ColumnShell:(LINEITEM).(L_ORDERKEY)))]		 [ !(0) orders , o_orderdate! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) partsupp , ps_supplycost! ; !(4) lineitem , l_quantity! ; !(5) supplier , s_nationkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>-1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 3  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>3; 4  ColumnShell:(LINEITEM).(L_QUANTITY)>>4; 5  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>5; 6  ColumnShell:(ORDERS).(O_ORDERKEY)>>-2; 7  ColumnShell:(LINEITEM).(L_ORDERKEY)>>6; ]-- 		:[PART, LINEITEM, SUPPLIER, PARTSUPP, ORDERS, ]
+
+------------------------    FilterNode:[((ColumnShell:(PARTSUPP).(PS_PARTKEY)) = (ColumnShell:(LINEITEM).(L_PARTKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) partsupp , ps_supplycost! ; !(3) lineitem , l_quantity! ; !(4) supplier , s_nationkey! ; !(5) lineitem , l_orderkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>3; 3  ColumnShell:(LINEITEM).(L_QUANTITY)>>4; 4  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>5; 5  ColumnShell:(LINEITEM).(L_ORDERKEY)>>6; 6  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>7; 7  ColumnShell:(LINEITEM).(L_PARTKEY)>>8; ]-- 		:[PART, LINEITEM, SUPPLIER, PARTSUPP, ]
+
+----------------------------    BinaryJoinNode<0:FALSE>:[Inner Join --- ((ColumnShell:(PARTSUPP).(PS_SUPPKEY)) = (ColumnShell:(LINEITEM).(L_SUPPKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) partsupp , ps_supplycost! ; !(3) lineitem , l_quantity! ; !(4) supplier , s_nationkey! ; !(5) lineitem , l_orderkey! ; !(6) partsupp , ps_partkey! ; !(7) lineitem , l_partkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>-1; 3  ColumnShell:(LINEITEM).(L_QUANTITY)>>3; 4  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 5  ColumnShell:(LINEITEM).(L_ORDERKEY)>>5; 6  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>-2; 7  ColumnShell:(LINEITEM).(L_PARTKEY)>>6; 8  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>-3; 9  ColumnShell:(LINEITEM).(L_SUPPKEY)>>7; ]-- 		:[PART, LINEITEM, SUPPLIER, PARTSUPP, ]
+
+--------------------------------    BinaryJoinNode<1:TRUE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_SUPPKEY)) = (ColumnShell:(LINEITEM).(L_SUPPKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_quantity! ; !(3) supplier , s_nationkey! ; !(4) lineitem , l_orderkey! ; !(5) lineitem , l_partkey! ; !(6) lineitem , l_suppkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(LINEITEM).(L_QUANTITY)>>3; 3  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>-1; 4  ColumnShell:(LINEITEM).(L_ORDERKEY)>>4; 5  ColumnShell:(LINEITEM).(L_PARTKEY)>>5; 6  ColumnShell:(LINEITEM).(L_SUPPKEY)>>6; 7  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>-2; ]-- 		:[PART, LINEITEM, SUPPLIER, ]
+
+------------------------------------    BinaryJoinNode<1:FALSE>:[Inner Join --- ((ColumnShell:(PART).(P_PARTKEY)) = (ColumnShell:(LINEITEM).(L_PARTKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_quantity! ; !(3) lineitem , l_orderkey! ; !(4) lineitem , l_partkey! ; !(5) lineitem , l_suppkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>-1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>-2; 2  ColumnShell:(LINEITEM).(L_QUANTITY)>>-3; 3  ColumnShell:(LINEITEM).(L_ORDERKEY)>>-4; 4  ColumnShell:(LINEITEM).(L_PARTKEY)>>-5; 5  ColumnShell:(LINEITEM).(L_SUPPKEY)>>-6; 6  ColumnShell:(PART).(P_PARTKEY)>>1; ]-- 		:[PART, LINEITEM, ]
+
+----------------------------------------    FilterNode:[(ColumnShell:(PART).(P_NAME)) like ("%sienna%")]		 [ !(0) part , p_partkey! ;] 		--[ 0  ColumnShell:(PART).(P_PARTKEY)>>1; 1  ColumnShell:(PART).(P_NAME)>>2; ]-- 		:[PART, ]
+
+--------------------------------------------    TableNode:[PART]		 [ !(0) part , p_partkey! ; !(1) part , p_name! ;] 		--[ 0  ColumnShell:(PART).(P_PARTKEY)>>1; 1  ColumnShell:(PART).(P_NAME)>>2; ]-- 		:[PART, ]
+
+----------------------------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_quantity! ; !(3) lineitem , l_orderkey! ; !(4) lineitem , l_partkey! ; !(5) lineitem , l_suppkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 2  ColumnShell:(LINEITEM).(L_QUANTITY)>>5; 3  ColumnShell:(LINEITEM).(L_ORDERKEY)>>1; 4  ColumnShell:(LINEITEM).(L_PARTKEY)>>2; 5  ColumnShell:(LINEITEM).(L_SUPPKEY)>>3; ]-- 		:[LINEITEM, ]
+
+------------------------------------    TableNode:[SUPPLIER]		 [ !(0) supplier , s_nationkey! ; !(1) supplier , s_suppkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 1  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; ]-- 		:[SUPPLIER, ]
+
+--------------------------------    TableNode:[PARTSUPP]		 [ !(0) partsupp , ps_supplycost! ; !(1) partsupp , ps_partkey! ; !(2) partsupp , ps_suppkey! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>4; 1  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>1; 2  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>2; ]-- 		:[PARTSUPP, ]
+
+------------------------    TableNode:[ORDERS]		 [ !(0) orders , o_orderdate! ; !(1) orders , o_orderkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERDATE)>>5; 1  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; ]-- 		:[ORDERS, ]
+
+--------------------    TableNode:[NATION]		 [ !(0) nation , n_name! ; !(1) nation , n_nationkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NAME)>>2; 1  ColumnShell:(NATION).(N_NATIONKEY)>>1; ]-- 		:[NATION, ]
+-------------------------------------------------------------------------------------------------------10
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/10.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [CUSTOMER : CUSTOMER]
+brp->GetMyOutputName() : primary_table_name = [ORDERS : CUSTOMER]
+brp->GetMyOutputName() : primary_table_name = [LINEITEM : ORDERS]
+brp->GetMyOutputName() : primary_table_name = [NATION : NATION]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(CUSTOMER).(C_CUSTKEY)))
+, ((ColumnShell:(CUSTOMER).(C_NAME)))
+, ([SQLFunction:(SUM)](((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT))))))) AS REVENUE
+, ((ColumnShell:(CUSTOMER).(C_ACCTBAL)))
+, ((ColumnShell:(NATION).(N_NAME)))
+, ((ColumnShell:(CUSTOMER).(C_ADDRESS)))
+, ((ColumnShell:(CUSTOMER).(C_PHONE)))
+, ((ColumnShell:(CUSTOMER).(C_COMMENT)))
+, ]		 [ !(0) customer , c_custkey! ; !(1) customer , c_name! ; !(2) nameless , revenue! ; !(3) customer , c_acctbal! ; !(4) nation , n_name! ; !(5) customer , c_address! ; !(6) customer , c_phone! ; !(7) customer , c_comment! ;] 		--[ ]-- 		:[CUSTOMER, ORDERS, LINEITEM, NATION, ]
+
+----    SortNode: [((ColumnShell:(!-!SELECT_ALIAS!-!).(REVENUE))) DESC, ]		 [ !(0) customer , c_custkey! ; !(1) customer , c_name! ; !(2) nameless , revenue! ; !(3) customer , c_acctbal! ; !(4) nation , n_name! ; !(5) customer , c_address! ; !(6) customer , c_phone! ; !(7) customer , c_comment! ;] 		--[ 0  ColumnShell:(!-!SELECT_ALIAS!-!).(REVENUE)>>3; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, NATION, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(CUSTOMER).(C_CUSTKEY))   ,1:   (ColumnShell:(CUSTOMER).(C_NAME))   ,2:   (ColumnShell:(CUSTOMER).(C_ACCTBAL))   ,3:   (ColumnShell:(CUSTOMER).(C_PHONE))   ,4:   (ColumnShell:(NATION).(N_NAME))   ,5:   (ColumnShell:(CUSTOMER).(C_ADDRESS))   ,6:   (ColumnShell:(CUSTOMER).(C_COMMENT))   ,]		 [ !(0) customer , c_custkey! ; !(1) customer , c_name! ; !(2) nameless , revenue! ; !(3) customer , c_acctbal! ; !(4) nation , n_name! ; !(5) customer , c_address! ; !(6) customer , c_phone! ; !(7) customer , c_comment! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; 1  ColumnShell:(CUSTOMER).(C_NAME)>>2; 2  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>3; 3  ColumnShell:(LINEITEM).(L_DISCOUNT)>>4; 4  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>5; 5  ColumnShell:(NATION).(N_NAME)>>6; 6  ColumnShell:(CUSTOMER).(C_ADDRESS)>>7; 7  ColumnShell:(CUSTOMER).(C_PHONE)>>8; 8  ColumnShell:(CUSTOMER).(C_COMMENT)>>9; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, NATION, ]
+
+------------    BinaryJoinNode<-1:TRUE>:[Inner Join --- ((ColumnShell:(CUSTOMER).(C_NATIONKEY)) = (ColumnShell:(NATION).(N_NATIONKEY)))]		 [ !(0) customer , c_custkey! ; !(1) customer , c_name! ; !(2) lineitem , l_extendedprice! ; !(3) lineitem , l_discount! ; !(4) customer , c_acctbal! ; !(5) nation , n_name! ; !(6) customer , c_address! ; !(7) customer , c_phone! ; !(8) customer , c_comment! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; 1  ColumnShell:(CUSTOMER).(C_NAME)>>2; 2  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>3; 3  ColumnShell:(LINEITEM).(L_DISCOUNT)>>4; 4  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>5; 5  ColumnShell:(NATION).(N_NAME)>>-1; 6  ColumnShell:(CUSTOMER).(C_ADDRESS)>>6; 7  ColumnShell:(CUSTOMER).(C_PHONE)>>7; 8  ColumnShell:(CUSTOMER).(C_COMMENT)>>8; 9  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>9; 10  ColumnShell:(NATION).(N_NATIONKEY)>>-2; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, NATION, ]
+
+----------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(LINEITEM).(L_ORDERKEY)) = (ColumnShell:(ORDERS).(O_ORDERKEY)))]		 [ !(0) customer , c_custkey! ; !(1) customer , c_name! ; !(2) lineitem , l_extendedprice! ; !(3) lineitem , l_discount! ; !(4) customer , c_acctbal! ; !(5) customer , c_address! ; !(6) customer , c_phone! ; !(7) customer , c_comment! ; !(8) customer , c_nationkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; 1  ColumnShell:(CUSTOMER).(C_NAME)>>2; 2  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>-1; 3  ColumnShell:(LINEITEM).(L_DISCOUNT)>>-2; 4  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>3; 5  ColumnShell:(CUSTOMER).(C_ADDRESS)>>4; 6  ColumnShell:(CUSTOMER).(C_PHONE)>>5; 7  ColumnShell:(CUSTOMER).(C_COMMENT)>>6; 8  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>7; 9  ColumnShell:(LINEITEM).(L_ORDERKEY)>>-3; 10  ColumnShell:(ORDERS).(O_ORDERKEY)>>8; ]-- 		:[CUSTOMER, ORDERS, LINEITEM, ]
+
+--------------------    BinaryJoinNode<1:TRUE>:[Inner Join --- ((ColumnShell:(CUSTOMER).(C_CUSTKEY)) = (ColumnShell:(ORDERS).(O_CUSTKEY)))]		 [ !(0) customer , c_custkey! ; !(1) customer , c_name! ; !(2) customer , c_acctbal! ; !(3) customer , c_address! ; !(4) customer , c_phone! ; !(5) customer , c_comment! ; !(6) customer , c_nationkey! ; !(7) orders , o_orderkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; 1  ColumnShell:(CUSTOMER).(C_NAME)>>2; 2  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>3; 3  ColumnShell:(CUSTOMER).(C_ADDRESS)>>4; 4  ColumnShell:(CUSTOMER).(C_PHONE)>>5; 5  ColumnShell:(CUSTOMER).(C_COMMENT)>>6; 6  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>7; 7  ColumnShell:(ORDERS).(O_ORDERKEY)>>-1; 8  ColumnShell:(ORDERS).(O_CUSTKEY)>>-2; ]-- 		:[CUSTOMER, ORDERS, ]
+
+------------------------    TableNode:[CUSTOMER]		 [ !(0) customer , c_custkey! ; !(1) customer , c_name! ; !(2) customer , c_acctbal! ; !(3) customer , c_address! ; !(4) customer , c_phone! ; !(5) customer , c_comment! ; !(6) customer , c_nationkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; 1  ColumnShell:(CUSTOMER).(C_NAME)>>2; 2  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>6; 3  ColumnShell:(CUSTOMER).(C_ADDRESS)>>3; 4  ColumnShell:(CUSTOMER).(C_PHONE)>>5; 5  ColumnShell:(CUSTOMER).(C_COMMENT)>>8; 6  ColumnShell:(CUSTOMER).(C_NATIONKEY)>>4; ]-- 		:[CUSTOMER, ]
+
+------------------------    FilterNode:[(((ColumnShell:(ORDERS).(O_ORDERDATE)) >= ("1995-01-01")) and ((ColumnShell:(ORDERS).(O_ORDERDATE)) < ("1995-04-01")))]		 [ !(0) orders , o_orderkey! ; !(1) orders , o_custkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 1  ColumnShell:(ORDERS).(O_CUSTKEY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERDATE)>>3; ]-- 		:[ORDERS, ]
+
+----------------------------    TableNode:[ORDERS]		 [ !(0) orders , o_orderkey! ; !(1) orders , o_custkey! ; !(2) orders , o_orderdate! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 1  ColumnShell:(ORDERS).(O_CUSTKEY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERDATE)>>5; ]-- 		:[ORDERS, ]
+
+--------------------    FilterNode:[((ColumnShell:(LINEITEM).(L_RETURNFLAG)) = ("R"))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_orderkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(LINEITEM).(L_ORDERKEY)>>3; 3  ColumnShell:(LINEITEM).(L_RETURNFLAG)>>4; ]-- 		:[LINEITEM, ]
+
+------------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_orderkey! ; !(3) lineitem , l_returnflag! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 2  ColumnShell:(LINEITEM).(L_ORDERKEY)>>1; 3  ColumnShell:(LINEITEM).(L_RETURNFLAG)>>9; ]-- 		:[LINEITEM, ]
+
+----------------    TableNode:[NATION]		 [ !(0) nation , n_name! ; !(1) nation , n_nationkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NAME)>>2; 1  ColumnShell:(NATION).(N_NATIONKEY)>>1; ]-- 		:[NATION, ]
+-------------------------------------------------------------------------------------------------------11
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/11.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [PARTSUPP : SUPPLIER]
+brp->GetMyOutputName() : primary_table_name = [SUPPLIER : SUPPLIER]
+brp->GetMyOutputName() : primary_table_name = [NATION : NATION]
+brp->GetMyOutputName() : primary_table_name = [PARTSUPP : SUPPLIER]
+brp->GetMyOutputName() : primary_table_name = [SUPPLIER : SUPPLIER]
+brp->GetMyOutputName() : primary_table_name = [NATION : NATION]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+0	[SQLFunction:(SUM)](((ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)) + (ColumnShell:(PARTSUPP).(PS_AVAILQTY))))
+0	1	1
+done.
+0	[SQLFunction:(SUM)](((ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)) + (ColumnShell:(PARTSUPP).(PS_AVAILQTY))))
+we created 1 placeholders!
+1.1 ok
+1.2 ok
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(PARTSUPP).(PS_PARTKEY)))
+, ([SQLFunction:(SUM)](((ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)) + (ColumnShell:(PARTSUPP).(PS_AVAILQTY))))) AS VALUE
+, ]		 [ !(0) partsupp , ps_partkey! ; !(1) nameless , value! ;] 		--[ ]-- 		:[PARTSUPP, SUPPLIER, NATION, ]
+
+----    SortNode: [((ColumnShell:(!-!SELECT_ALIAS!-!).(VALUE))) DESC, ]		 [ !(0) partsupp , ps_partkey! ; !(1) nameless , value! ;] 		--[ 0  ColumnShell:(!-!SELECT_ALIAS!-!).(VALUE)>>2; ]-- 		:[PARTSUPP, SUPPLIER, NATION, ]
+
+--------    FilterNode:[((ColumnShell:(PLACEHOLDER_TABLE_19790609).(1)) > ("[INIT_QUERY_RESULT]"))]		 [ !(0) partsupp , ps_partkey! ; !(1) nameless , value! ;] 		--[ 0  ColumnShell:(PLACEHOLDER_TABLE_19790609).(1)>>2; ]-- 		:[PARTSUPP, SUPPLIER, NATION, ]
+
+------------    GroupbyNode: [0:   (ColumnShell:(PARTSUPP).(PS_PARTKEY))   ,]		 [ !(0) partsupp , ps_partkey! ; !(1) nameless , value! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>1; 1  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>2; 2  ColumnShell:(PARTSUPP).(PS_AVAILQTY)>>3; ]-- 		:[PARTSUPP, SUPPLIER, NATION, ]
+
+----------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_NATIONKEY)) = (ColumnShell:(NATION).(N_NATIONKEY)))]		 [ !(0) partsupp , ps_partkey! ; !(1) partsupp , ps_supplycost! ; !(2) partsupp , ps_availqty! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>1; 1  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>2; 2  ColumnShell:(PARTSUPP).(PS_AVAILQTY)>>3; 3  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 4  ColumnShell:(NATION).(N_NATIONKEY)>>-1; ]-- 		:[PARTSUPP, SUPPLIER, NATION, ]
+
+--------------------    BinaryJoinNode<-1:TRUE>:[Inner Join --- ((ColumnShell:(PARTSUPP).(PS_SUPPKEY)) = (ColumnShell:(SUPPLIER).(S_SUPPKEY)))]		 [ !(0) partsupp , ps_partkey! ; !(1) partsupp , ps_supplycost! ; !(2) partsupp , ps_availqty! ; !(3) supplier , s_nationkey! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>1; 1  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>2; 2  ColumnShell:(PARTSUPP).(PS_AVAILQTY)>>3; 3  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>-1; 4  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>4; 5  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>-2; ]-- 		:[PARTSUPP, SUPPLIER, ]
+
+------------------------    TableNode:[PARTSUPP]		 [ !(0) partsupp , ps_partkey! ; !(1) partsupp , ps_supplycost! ; !(2) partsupp , ps_availqty! ; !(3) partsupp , ps_suppkey! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>1; 1  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>4; 2  ColumnShell:(PARTSUPP).(PS_AVAILQTY)>>3; 3  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>2; ]-- 		:[PARTSUPP, ]
+
+------------------------    TableNode:[SUPPLIER]		 [ !(0) supplier , s_nationkey! ; !(1) supplier , s_suppkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 1  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; ]-- 		:[SUPPLIER, ]
+
+--------------------    FilterNode:[((ColumnShell:(NATION).(N_NAME)) = ("INDIA"))]		 [ !(0) nation , n_nationkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NATIONKEY)>>1; 1  ColumnShell:(NATION).(N_NAME)>>2; ]-- 		:[NATION, ]
+
+------------------------    TableNode:[NATION]		 [ !(0) nation , n_nationkey! ; !(1) nation , n_name! ;] 		--[ 0  ColumnShell:(NATION).(N_NATIONKEY)>>1; 1  ColumnShell:(NATION).(N_NAME)>>2; ]-- 		:[NATION, ]
+
+
+			INIT QUERY PLAN
+------------------------------------------------------
+
+    ColumnNode(R): [ (([SQLFunction:(SUM)](((ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)) + (ColumnShell:(PARTSUPP).(PS_AVAILQTY)))) + (0.000100)))
+, ]		 [ !(0) nameless , nameless! ;] 		--[ ]-- 		:[PARTSUPP, SUPPLIER, NATION, ]
+
+----    GroupbyNode: []		 [ !(0) nameless , nameless! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>1; 1  ColumnShell:(PARTSUPP).(PS_AVAILQTY)>>2; ]-- 		:[PARTSUPP, SUPPLIER, NATION, ]
+
+--------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_NATIONKEY)) = (ColumnShell:(NATION).(N_NATIONKEY)))]		 [ !(0) partsupp , ps_supplycost! ; !(1) partsupp , ps_availqty! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>1; 1  ColumnShell:(PARTSUPP).(PS_AVAILQTY)>>2; 2  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>3; 3  ColumnShell:(NATION).(N_NATIONKEY)>>-1; ]-- 		:[PARTSUPP, SUPPLIER, NATION, ]
+
+------------    BinaryJoinNode<-1:TRUE>:[Inner Join --- ((ColumnShell:(PARTSUPP).(PS_SUPPKEY)) = (ColumnShell:(SUPPLIER).(S_SUPPKEY)))]		 [ !(0) partsupp , ps_supplycost! ; !(1) partsupp , ps_availqty! ; !(2) supplier , s_nationkey! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>1; 1  ColumnShell:(PARTSUPP).(PS_AVAILQTY)>>2; 2  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>-1; 3  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>3; 4  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>-2; ]-- 		:[PARTSUPP, SUPPLIER, ]
+
+----------------    TableNode:[PARTSUPP]		 [ !(0) partsupp , ps_supplycost! ; !(1) partsupp , ps_availqty! ; !(2) partsupp , ps_suppkey! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_SUPPLYCOST)>>4; 1  ColumnShell:(PARTSUPP).(PS_AVAILQTY)>>3; 2  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>2; ]-- 		:[PARTSUPP, ]
+
+----------------    TableNode:[SUPPLIER]		 [ !(0) supplier , s_nationkey! ; !(1) supplier , s_suppkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 1  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; ]-- 		:[SUPPLIER, ]
+
+------------    FilterNode:[((ColumnShell:(NATION).(N_NAME)) = ("INDIA"))]		 [ !(0) nation , n_nationkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NATIONKEY)>>1; 1  ColumnShell:(NATION).(N_NAME)>>2; ]-- 		:[NATION, ]
+
+----------------    TableNode:[NATION]		 [ !(0) nation , n_nationkey! ; !(1) nation , n_name! ;] 		--[ 0  ColumnShell:(NATION).(N_NATIONKEY)>>1; 1  ColumnShell:(NATION).(N_NAME)>>2; ]-- 		:[NATION, ]
+-----------------------
+
+-------------------------------------------------------------------------------------------------------12
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/12.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [ORDERS : ORDERS]
+brp->GetMyOutputName() : primary_table_name = [LINEITEM : ORDERS]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(LINEITEM).(L_SHIPMODE)))
+, ([SQLFunction:(SUM)]((CASE  WHEN (((ColumnShell:(ORDERS).(O_ORDERPRIORITY)) = ("1-URGENT")) or ((ColumnShell:(ORDERS).(O_ORDERPRIORITY)) = ("2-HIGH"))) THEN (1) ELSE (0)))) AS HIGH_LINE_COUNT
+, ([SQLFunction:(SUM)]((CASE  WHEN (((ColumnShell:(ORDERS).(O_ORDERPRIORITY)) != ("1-URGENT")) and ((ColumnShell:(ORDERS).(O_ORDERPRIORITY)) != ("2-HIGH"))) THEN (1) ELSE (0)))) AS LOW_LINE_COUNT
+, ]		 [ !(0) lineitem , l_shipmode! ; !(1) nameless , high_line_count! ; !(2) nameless , low_line_count! ;] 		--[ ]-- 		:[ORDERS, LINEITEM, ]
+
+----    SortNode: [((ColumnShell:(LINEITEM).(L_SHIPMODE))) ASC, ]		 [ !(0) lineitem , l_shipmode! ; !(1) nameless , high_line_count! ; !(2) nameless , low_line_count! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SHIPMODE)>>1; ]-- 		:[ORDERS, LINEITEM, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(LINEITEM).(L_SHIPMODE))   ,]		 [ !(0) lineitem , l_shipmode! ; !(1) nameless , high_line_count! ; !(2) nameless , low_line_count! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SHIPMODE)>>1; 1  ColumnShell:(ORDERS).(O_ORDERPRIORITY)>>2; ]-- 		:[ORDERS, LINEITEM, ]
+
+------------    BinaryJoinNode<1:TRUE>:[Inner Join --- ((ColumnShell:(ORDERS).(O_ORDERKEY)) = (ColumnShell:(LINEITEM).(L_ORDERKEY)))]		 [ !(0) lineitem , l_shipmode! ; !(1) orders , o_orderpriority! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SHIPMODE)>>-1; 1  ColumnShell:(ORDERS).(O_ORDERPRIORITY)>>1; 2  ColumnShell:(ORDERS).(O_ORDERKEY)>>2; 3  ColumnShell:(LINEITEM).(L_ORDERKEY)>>-2; ]-- 		:[ORDERS, LINEITEM, ]
+
+----------------    TableNode:[ORDERS]		 [ !(0) orders , o_orderpriority! ; !(1) orders , o_orderkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERPRIORITY)>>6; 1  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; ]-- 		:[ORDERS, ]
+
+----------------    FilterNode:[(((((ColumnShell:(LINEITEM).(L_SHIPMODE)) in (("TRUCK"), ("AIR")) and ((ColumnShell:(LINEITEM).(L_COMMITDATE)) < (ColumnShell:(LINEITEM).(L_RECEIPTDATE)))) and ((ColumnShell:(LINEITEM).(L_SHIPDATE)) < (ColumnShell:(LINEITEM).(L_COMMITDATE)))) and ((ColumnShell:(LINEITEM).(L_RECEIPTDATE)) >= ("1993-01-01"))) and ((ColumnShell:(LINEITEM).(L_RECEIPTDATE)) < ("1994-01-01")))]		 [ !(0) lineitem , l_shipmode! ; !(1) lineitem , l_orderkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SHIPMODE)>>1; 1  ColumnShell:(LINEITEM).(L_ORDERKEY)>>2; 2  ColumnShell:(LINEITEM).(L_COMMITDATE)>>3; 3  ColumnShell:(LINEITEM).(L_RECEIPTDATE)>>4; 4  ColumnShell:(LINEITEM).(L_SHIPDATE)>>5; ]-- 		:[LINEITEM, ]
+
+--------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_shipmode! ; !(1) lineitem , l_orderkey! ; !(2) lineitem , l_commitdate! ; !(3) lineitem , l_receiptdate! ; !(4) lineitem , l_shipdate! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SHIPMODE)>>15; 1  ColumnShell:(LINEITEM).(L_ORDERKEY)>>1; 2  ColumnShell:(LINEITEM).(L_COMMITDATE)>>12; 3  ColumnShell:(LINEITEM).(L_RECEIPTDATE)>>13; 4  ColumnShell:(LINEITEM).(L_SHIPDATE)>>11; ]-- 		:[LINEITEM, ]
+-------------------------------------------------------------------------------------------------------13
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/13.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(C_ORDERS).(C_COUNT)))
+, ([SQLFunction:(COUNT)]((0), (*))) AS CUSTDIST
+, ]		 [ !(0) c_orders , c_count! ; !(1) nameless , custdist! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS C_ORDERS, ]
+
+----    SortNode: [((ColumnShell:(!-!SELECT_ALIAS!-!).(CUSTDIST))) DESC, ((ColumnShell:(C_ORDERS).(C_COUNT))) DESC, ]		 [ !(0) c_orders , c_count! ; !(1) nameless , custdist! ;] 		--[ 0  ColumnShell:(!-!SELECT_ALIAS!-!).(CUSTDIST)>>2; 1  ColumnShell:(C_ORDERS).(C_COUNT)>>1; ]-- 		:[( %SUBQUERY% ) AS C_ORDERS, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(C_ORDERS).(C_COUNT))   ,]		 [ !(0) c_orders , c_count! ; !(1) nameless , custdist! ;] 		--[ 0  ColumnShell:(C_ORDERS).(C_COUNT)>>1; ]-- 		:[( %SUBQUERY% ) AS C_ORDERS, ]
+
+------------    ColumnNode: [ ((ColumnShell:(CUSTOMER).(C_CUSTKEY)))
+, ([SQLFunction:(COUNT)]((0), (ColumnShell:(ORDERS).(O_ORDERKEY)))) AS C_COUNT
+, ]		 [ !(0) c_orders , c_count! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS C_ORDERS, ]
+
+----------------    GroupbyNode: [0:   (ColumnShell:(CUSTOMER).(C_CUSTKEY))   ,]		 [ !(0) customer , c_custkey! ; !(1) nameless , c_count! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; 1  ColumnShell:(ORDERS).(O_ORDERKEY)>>2; ]-- 		:[CUSTOMER, ORDERS, ]
+
+--------------------    BinaryJoinNode<0:FALSE>:[Left Outer Join --- ((ColumnShell:(CUSTOMER).(C_CUSTKEY)) = (ColumnShell:(ORDERS).(O_CUSTKEY)))]		 [ !(0) customer , c_custkey! ; !(1) orders , o_orderkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; 1  ColumnShell:(ORDERS).(O_ORDERKEY)>>-1; 2  ColumnShell:(ORDERS).(O_CUSTKEY)>>-2; ]-- 		:[CUSTOMER, ORDERS, ]
+
+------------------------    TableNode:[CUSTOMER]		 [ !(0) customer , c_custkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; ]-- 		:[CUSTOMER, ]
+
+------------------------    FilterNode:[NOT ((ColumnShell:(ORDERS).(O_COMMENT)) like ("%special%packages%"))]		 [ !(0) orders , o_orderkey! ; !(1) orders , o_custkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 1  ColumnShell:(ORDERS).(O_CUSTKEY)>>2; 2  ColumnShell:(ORDERS).(O_COMMENT)>>3; ]-- 		:[ORDERS, ]
+
+----------------------------    TableNode:[ORDERS]		 [ !(0) orders , o_orderkey! ; !(1) orders , o_custkey! ; !(2) orders , o_comment! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 1  ColumnShell:(ORDERS).(O_CUSTKEY)>>2; 2  ColumnShell:(ORDERS).(O_COMMENT)>>9; ]-- 		:[ORDERS, ]
+-------------------------------------------------------------------------------------------------------14
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/14.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [LINEITEM : PART]
+brp->GetMyOutputName() : primary_table_name = [PART : PART]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((((100.000000) + [SQLFunction:(SUM)]((CASE  WHEN (ColumnShell:(PART).(P_TYPE)) like ("PROMO%") THEN ((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT))))) ELSE (0)))) / [SQLFunction:(SUM)](((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT)))))))) AS PROMO_REVENUE
+, ]		 [ !(0) nameless , promo_revenue! ;] 		--[ ]-- 		:[LINEITEM, PART, ]
+
+----    GroupbyNode: []		 [ !(0) nameless , promo_revenue! ;] 		--[ 0  ColumnShell:(PART).(P_TYPE)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; ]-- 		:[LINEITEM, PART, ]
+
+--------    BinaryJoinNode<-1:TRUE>:[Inner Join --- ((ColumnShell:(LINEITEM).(L_PARTKEY)) = (ColumnShell:(PART).(P_PARTKEY)))]		 [ !(0) part , p_type! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ;] 		--[ 0  ColumnShell:(PART).(P_TYPE)>>-1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 3  ColumnShell:(LINEITEM).(L_PARTKEY)>>3; 4  ColumnShell:(PART).(P_PARTKEY)>>-2; ]-- 		:[LINEITEM, PART, ]
+
+------------    FilterNode:[(((ColumnShell:(LINEITEM).(L_SHIPDATE)) >= ("1993-04-01")) and ((ColumnShell:(LINEITEM).(L_SHIPDATE)) < ("1993-05-01")))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_partkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(LINEITEM).(L_PARTKEY)>>3; 3  ColumnShell:(LINEITEM).(L_SHIPDATE)>>4; ]-- 		:[LINEITEM, ]
+
+----------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_partkey! ; !(3) lineitem , l_shipdate! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 2  ColumnShell:(LINEITEM).(L_PARTKEY)>>2; 3  ColumnShell:(LINEITEM).(L_SHIPDATE)>>11; ]-- 		:[LINEITEM, ]
+
+------------    TableNode:[PART]		 [ !(0) part , p_type! ; !(1) part , p_partkey! ;] 		--[ 0  ColumnShell:(PART).(P_TYPE)>>5; 1  ColumnShell:(PART).(P_PARTKEY)>>1; ]-- 		:[PART, ]
+-------------------------------------------------------------------------------------------------------15
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/15.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode: [ ((ColumnShell:(SUPPLIER).(S_SUPPKEY)))
+, ((ColumnShell:(SUPPLIER).(S_NAME)))
+, ((ColumnShell:(SUPPLIER).(S_ADDRESS)))
+, ((ColumnShell:(SUPPLIER).(S_PHONE)))
+, ((ColumnShell:(REVENUE0).(TOTAL_REVENUE)))
+, ]		 [ !(0) unnamedqueryresult , s_suppkey! ; !(1) unnamedqueryresult , s_name! ; !(2) unnamedqueryresult , s_address! ; !(3) unnamedqueryresult , s_phone! ; !(4) unnamedqueryresult , total_revenue! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; 1  ColumnShell:(SUPPLIER).(S_NAME)>>2; 2  ColumnShell:(SUPPLIER).(S_ADDRESS)>>3; 3  ColumnShell:(SUPPLIER).(S_PHONE)>>4; 4  ColumnShell:(REVENUE0).(TOTAL_REVENUE)>>5; ]-- 		:[SUPPLIER, ( %SUBQUERY% ) AS REVENUE0, ]
+
+----    SortNode: [((ColumnShell:(SUPPLIER).(S_SUPPKEY))) ASC, ]		 [ !(0) supplier , s_suppkey! ; !(1) supplier , s_name! ; !(2) supplier , s_address! ; !(3) supplier , s_phone! ; !(4) revenue0 , total_revenue! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; 1  ColumnShell:(SUPPLIER).(S_NAME)>>2; 2  ColumnShell:(SUPPLIER).(S_ADDRESS)>>3; 3  ColumnShell:(SUPPLIER).(S_PHONE)>>4; 4  ColumnShell:(REVENUE0).(TOTAL_REVENUE)>>5; ]-- 		:[SUPPLIER, ( %SUBQUERY% ) AS REVENUE0, ]
+
+--------    BinaryJoinNode<0:FALSE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_SUPPKEY)) = (ColumnShell:(REVENUE0).(SUPPLIER_NO)))]		 [ !(0) supplier , s_suppkey! ; !(1) supplier , s_name! ; !(2) supplier , s_address! ; !(3) supplier , s_phone! ; !(4) revenue0 , total_revenue! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; 1  ColumnShell:(SUPPLIER).(S_NAME)>>2; 2  ColumnShell:(SUPPLIER).(S_ADDRESS)>>3; 3  ColumnShell:(SUPPLIER).(S_PHONE)>>4; 4  ColumnShell:(REVENUE0).(TOTAL_REVENUE)>>-1; 5  ColumnShell:(REVENUE0).(SUPPLIER_NO)>>-2; ]-- 		:[SUPPLIER, ( %SUBQUERY% ) AS REVENUE0, ]
+
+------------    TableNode:[SUPPLIER]		 [ !(0) supplier , s_suppkey! ; !(1) supplier , s_name! ; !(2) supplier , s_address! ; !(3) supplier , s_phone! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; 1  ColumnShell:(SUPPLIER).(S_NAME)>>2; 2  ColumnShell:(SUPPLIER).(S_ADDRESS)>>3; 3  ColumnShell:(SUPPLIER).(S_PHONE)>>5; ]-- 		:[SUPPLIER, ]
+
+------------    FilterNode:[((ColumnShell:(REVENUE0).(TOTAL_REVENUE)) = ("[INIT_QUERY_RESULT]"))]		 [ !(0) revenue0 , total_revenue! ; !(1) revenue0 , supplier_no! ;] 		--[ 0  ColumnShell:(REVENUE0).(TOTAL_REVENUE)>>1; 1  ColumnShell:(REVENUE0).(SUPPLIER_NO)>>2; ]-- 		:[( %SUBQUERY% ) AS REVENUE0, ]
+
+----------------    ColumnNode: [ ((ColumnShell:(LINEITEM).(L_SUPPKEY))) AS SUPPLIER_NO
+, ([SQLFunction:(SUM)](((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT))))))) AS TOTAL_REVENUE
+, ]		 [ !(0) revenue0 , total_revenue! ; !(1) revenue0 , supplier_no! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS REVENUE0, ]
+
+--------------------    GroupbyNode: [0:   (ColumnShell:(LINEITEM).(L_SUPPKEY))   ,]		 [ !(0) lineitem , supplier_no! ; !(1) nameless , total_revenue! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SUPPKEY)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; ]-- 		:[LINEITEM, ]
+
+------------------------    FilterNode:[(((ColumnShell:(LINEITEM).(L_SHIPDATE)) >= ("1996-05-01")) and ((ColumnShell:(LINEITEM).(L_SHIPDATE)) < ("1996-08-01")))]		 [ !(0) lineitem , l_suppkey! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SUPPKEY)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(LINEITEM).(L_SHIPDATE)>>4; ]-- 		:[LINEITEM, ]
+
+----------------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_suppkey! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) lineitem , l_shipdate! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SUPPKEY)>>3; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 3  ColumnShell:(LINEITEM).(L_SHIPDATE)>>11; ]-- 		:[LINEITEM, ]
+
+
+			INIT QUERY PLAN
+------------------------------------------------------
+
+    ColumnNode(R): [ ([SQLFunction:(MAX)]((ColumnShell:(REVENUE1).(TOTAL_REVENUE))))
+, ]		 [ !(0) nameless , nameless! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS REVENUE1, ]
+
+----    GroupbyNode: []		 [ !(0) nameless , nameless! ;] 		--[ 0  ColumnShell:(REVENUE1).(TOTAL_REVENUE)>>1; ]-- 		:[( %SUBQUERY% ) AS REVENUE1, ]
+
+--------    ColumnNode: [ ((ColumnShell:(LINEITEM).(L_SUPPKEY))) AS SUPPLIER_NO
+, ([SQLFunction:(SUM)](((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT))))))) AS TOTAL_REVENUE
+, ]		 [ !(0) revenue1 , total_revenue! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS REVENUE1, ]
+
+------------    GroupbyNode: [0:   (ColumnShell:(LINEITEM).(L_SUPPKEY))   ,]		 [ !(0) lineitem , supplier_no! ; !(1) nameless , total_revenue! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SUPPKEY)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; ]-- 		:[LINEITEM, ]
+
+----------------    FilterNode:[(((ColumnShell:(LINEITEM).(L_SHIPDATE)) >= ("1996-05-01")) and ((ColumnShell:(LINEITEM).(L_SHIPDATE)) < ("1996-08-01")))]		 [ !(0) lineitem , l_suppkey! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SUPPKEY)>>1; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>2; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>3; 3  ColumnShell:(LINEITEM).(L_SHIPDATE)>>4; ]-- 		:[LINEITEM, ]
+
+--------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_suppkey! ; !(1) lineitem , l_extendedprice! ; !(2) lineitem , l_discount! ; !(3) lineitem , l_shipdate! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_SUPPKEY)>>3; 1  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 2  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 3  ColumnShell:(LINEITEM).(L_SHIPDATE)>>11; ]-- 		:[LINEITEM, ]
+-----------------------
+
+-------------------------------------------------------------------------------------------------------16
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/16.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [PARTSUPP : PART]
+brp->GetMyOutputName() : primary_table_name = [PART : PART]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(PART).(P_BRAND)))
+, ((ColumnShell:(PART).(P_TYPE)))
+, ((ColumnShell:(PART).(P_SIZE)))
+, ([SQLFunction:(COUNT)]((1), (ColumnShell:(PARTSUPP).(PS_SUPPKEY)))) AS SUPPLIER_CNT
+, ]		 [ !(0) part , p_brand! ; !(1) part , p_type! ; !(2) part , p_size! ; !(3) nameless , supplier_cnt! ;] 		--[ ]-- 		:[PARTSUPP, SUPPLIER AS SUPPLIER[197906090], PART, ]
+
+----    SortNode: [((ColumnShell:(!-!SELECT_ALIAS!-!).(SUPPLIER_CNT))) DESC, ((ColumnShell:(PART).(P_BRAND))) ASC, ((ColumnShell:(PART).(P_TYPE))) ASC, ((ColumnShell:(PART).(P_SIZE))) ASC, ]		 [ !(0) part , p_brand! ; !(1) part , p_type! ; !(2) part , p_size! ; !(3) nameless , supplier_cnt! ;] 		--[ 0  ColumnShell:(!-!SELECT_ALIAS!-!).(SUPPLIER_CNT)>>4; 1  ColumnShell:(PART).(P_BRAND)>>1; 2  ColumnShell:(PART).(P_TYPE)>>2; 3  ColumnShell:(PART).(P_SIZE)>>3; ]-- 		:[PARTSUPP, SUPPLIER AS SUPPLIER[197906090], PART, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(PART).(P_BRAND))   ,1:   (ColumnShell:(PART).(P_TYPE))   ,2:   (ColumnShell:(PART).(P_SIZE))   ,]		 [ !(0) part , p_brand! ; !(1) part , p_type! ; !(2) part , p_size! ; !(3) nameless , supplier_cnt! ;] 		--[ 0  ColumnShell:(PART).(P_BRAND)>>1; 1  ColumnShell:(PART).(P_TYPE)>>2; 2  ColumnShell:(PART).(P_SIZE)>>3; 3  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>4; ]-- 		:[PARTSUPP, SUPPLIER AS SUPPLIER[197906090], PART, ]
+
+------------    BinaryJoinNode<1:FALSE>:[Inner Join --- ((ColumnShell:(PART).(P_PARTKEY)) = (ColumnShell:(PARTSUPP).(PS_PARTKEY)))]		 [ !(0) part , p_brand! ; !(1) part , p_type! ; !(2) part , p_size! ; !(3) partsupp , ps_suppkey! ;] 		--[ 0  ColumnShell:(PART).(P_BRAND)>>-1; 1  ColumnShell:(PART).(P_TYPE)>>-2; 2  ColumnShell:(PART).(P_SIZE)>>-3; 3  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>1; 4  ColumnShell:(PART).(P_PARTKEY)>>-4; 5  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>2; ]-- 		:[PARTSUPP, SUPPLIER AS SUPPLIER[197906090], PART, ]
+
+----------------    BinaryJoinNode<0:FALSE>:[AntiJoin --- ((ColumnShell:(PARTSUPP).(PS_SUPPKEY)) = (ColumnShell:(SUPPLIER[197906090]).(S_SUPPKEY)))]		 [ !(0) partsupp , ps_suppkey! ; !(1) partsupp , ps_partkey! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>1; 1  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>2; 2  ColumnShell:(SUPPLIER[197906090]).(S_SUPPKEY)>>-1; ]-- 		:[PARTSUPP, SUPPLIER AS SUPPLIER[197906090], ]
+
+--------------------    TableNode:[PARTSUPP]		 [ !(0) partsupp , ps_suppkey! ; !(1) partsupp , ps_partkey! ;] 		--[ 0  ColumnShell:(PARTSUPP).(PS_SUPPKEY)>>2; 1  ColumnShell:(PARTSUPP).(PS_PARTKEY)>>1; ]-- 		:[PARTSUPP, ]
+
+--------------------    FilterNode:[(ColumnShell:(SUPPLIER[197906090]).(S_COMMENT)) like ("%Customer%Complaints%")]		 [ !(0) supplier[197906090] , s_suppkey! ;] 		--[ 0  ColumnShell:(SUPPLIER[197906090]).(S_SUPPKEY)>>1; 1  ColumnShell:(SUPPLIER[197906090]).(S_COMMENT)>>2; ]-- 		:[SUPPLIER AS SUPPLIER[197906090], ]
+
+------------------------    TableNode:[SUPPLIER AS SUPPLIER[197906090]]		 [ !(0) supplier[197906090] , s_suppkey! ; !(1) supplier[197906090] , s_comment! ;] 		--[ 0  ColumnShell:(SUPPLIER[197906090]).(S_SUPPKEY)>>1; 1  ColumnShell:(SUPPLIER[197906090]).(S_COMMENT)>>7; ]-- 		:[SUPPLIER AS SUPPLIER[197906090], ]
+
+----------------    FilterNode:[((((ColumnShell:(PART).(P_BRAND)) != ("Brand#15")) and NOT ((ColumnShell:(PART).(P_TYPE)) like ("STANDARD BRUSHED%"))) and (ColumnShell:(PART).(P_SIZE)) in ((12), (3), (43), (5), (30), (22), (15), (49)))]		 [ !(0) part , p_brand! ; !(1) part , p_type! ; !(2) part , p_size! ; !(3) part , p_partkey! ;] 		--[ 0  ColumnShell:(PART).(P_BRAND)>>1; 1  ColumnShell:(PART).(P_TYPE)>>2; 2  ColumnShell:(PART).(P_SIZE)>>3; 3  ColumnShell:(PART).(P_PARTKEY)>>4; ]-- 		:[PART, ]
+
+--------------------    TableNode:[PART]		 [ !(0) part , p_brand! ; !(1) part , p_type! ; !(2) part , p_size! ; !(3) part , p_partkey! ;] 		--[ 0  ColumnShell:(PART).(P_BRAND)>>4; 1  ColumnShell:(PART).(P_TYPE)>>5; 2  ColumnShell:(PART).(P_SIZE)>>6; 3  ColumnShell:(PART).(P_PARTKEY)>>1; ]-- 		:[PART, ]
+-------------------------------------------------------------------------------------------------------17
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/17.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [LINEITEM : PART]
+brp->GetMyOutputName() : primary_table_name = [PART : PART]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ (([SQLFunction:(SUM)]((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE))) / (7.000000))) AS AVG_YEARLY
+, ]		 [ !(0) nameless , avg_yearly! ;] 		--[ ]-- 		:[LINEITEM, PART, ( %SUBQUERY% ) AS PART_AGG, ]
+
+----    GroupbyNode: []		 [ !(0) nameless , avg_yearly! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; ]-- 		:[LINEITEM, PART, ( %SUBQUERY% ) AS PART_AGG, ]
+
+--------    FilterNode:[((ColumnShell:(LINEITEM).(L_QUANTITY)) < (ColumnShell:(PART_AGG).(AVG_QUANTITY)))]		 [ !(0) lineitem , l_extendedprice! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_QUANTITY)>>2; 2  ColumnShell:(PART_AGG).(AVG_QUANTITY)>>3; ]-- 		:[LINEITEM, PART, ( %SUBQUERY% ) AS PART_AGG, ]
+
+------------    BinaryJoinNode<0:FALSE>:[Inner Join --- ((ColumnShell:(PART_AGG).(AGG_PARTKEY)) = (ColumnShell:(LINEITEM).(L_PARTKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_quantity! ; !(2) part_agg , avg_quantity! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_QUANTITY)>>2; 2  ColumnShell:(PART_AGG).(AVG_QUANTITY)>>-1; 3  ColumnShell:(PART_AGG).(AGG_PARTKEY)>>-2; 4  ColumnShell:(LINEITEM).(L_PARTKEY)>>3; ]-- 		:[LINEITEM, PART, ( %SUBQUERY% ) AS PART_AGG, ]
+
+----------------    BinaryJoinNode<1:FALSE>:[Inner Join --- ((ColumnShell:(PART).(P_PARTKEY)) = (ColumnShell:(LINEITEM).(L_PARTKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_quantity! ; !(2) lineitem , l_partkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_QUANTITY)>>2; 2  ColumnShell:(LINEITEM).(L_PARTKEY)>>3; 3  ColumnShell:(PART).(P_PARTKEY)>>-1; ]-- 		:[LINEITEM, PART, ]
+
+--------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_quantity! ; !(2) lineitem , l_partkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 1  ColumnShell:(LINEITEM).(L_QUANTITY)>>5; 2  ColumnShell:(LINEITEM).(L_PARTKEY)>>2; ]-- 		:[LINEITEM, ]
+
+--------------------    FilterNode:[(((ColumnShell:(PART).(P_BRAND)) = ("Brand#51")) and ((ColumnShell:(PART).(P_CONTAINER)) = ("LG CASE")))]		 [ !(0) part , p_partkey! ;] 		--[ 0  ColumnShell:(PART).(P_PARTKEY)>>1; 1  ColumnShell:(PART).(P_BRAND)>>2; 2  ColumnShell:(PART).(P_CONTAINER)>>3; ]-- 		:[PART, ]
+
+------------------------    TableNode:[PART]		 [ !(0) part , p_partkey! ; !(1) part , p_brand! ; !(2) part , p_container! ;] 		--[ 0  ColumnShell:(PART).(P_PARTKEY)>>1; 1  ColumnShell:(PART).(P_BRAND)>>4; 2  ColumnShell:(PART).(P_CONTAINER)>>7; ]-- 		:[PART, ]
+
+----------------    ColumnNode: [ ((ColumnShell:(LINEITEM).(L_PARTKEY))) AS AGG_PARTKEY
+, (((0.200000) + [SQLFunction:(AVG)]((ColumnShell:(LINEITEM).(L_QUANTITY))))) AS AVG_QUANTITY
+, ]		 [ !(0) part_agg , avg_quantity! ; !(1) part_agg , agg_partkey! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS PART_AGG, ]
+
+--------------------    GroupbyNode: [0:   (ColumnShell:(LINEITEM).(L_PARTKEY))   ,]		 [ !(0) lineitem , agg_partkey! ; !(1) nameless , avg_quantity! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_PARTKEY)>>1; 1  ColumnShell:(LINEITEM).(L_QUANTITY)>>2; ]-- 		:[LINEITEM, ]
+
+------------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_partkey! ; !(1) lineitem , l_quantity! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_PARTKEY)>>2; 1  ColumnShell:(LINEITEM).(L_QUANTITY)>>5; ]-- 		:[LINEITEM, ]
+-------------------------------------------------------------------------------------------------------18
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/18.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [CUSTOMER : CUSTOMER]
+brp->GetMyOutputName() : primary_table_name = [ORDERS : CUSTOMER]
+brp->GetMyOutputName() : primary_table_name = [LINEITEM : ORDERS]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+0	[SQLFunction:(SUM)]((ColumnShell:(LINEITEM[197906090]).(L_QUANTITY)))
+0	-1	1
+done.
+0	[SQLFunction:(SUM)]((ColumnShell:(LINEITEM[197906090]).(L_QUANTITY)))
+we created 1 placeholders!
+1.1 ok
+1.2 ok
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(CUSTOMER).(C_NAME)))
+, ((ColumnShell:(CUSTOMER).(C_CUSTKEY)))
+, ((ColumnShell:(ORDERS).(O_ORDERKEY)))
+, ((ColumnShell:(ORDERS).(O_ORDERDATE)))
+, ((ColumnShell:(ORDERS).(O_TOTALPRICE)))
+, ([SQLFunction:(SUM)]((ColumnShell:(LINEITEM).(L_QUANTITY))))
+, ]		 [ !(0) customer , c_name! ; !(1) customer , c_custkey! ; !(2) orders , o_orderkey! ; !(3) orders , o_orderdate! ; !(4) orders , o_totalprice! ; !(5) nameless , nameless! ;] 		--[ ]-- 		:[CUSTOMER, ORDERS, LINEITEM AS LINEITEM[197906090], LINEITEM, ]
+
+----    SortNode: [((ColumnShell:(ORDERS).(O_TOTALPRICE))) DESC, ((ColumnShell:(ORDERS).(O_ORDERDATE))) ASC, ]		 [ !(0) customer , c_name! ; !(1) customer , c_custkey! ; !(2) orders , o_orderkey! ; !(3) orders , o_orderdate! ; !(4) orders , o_totalprice! ; !(5) nameless , nameless! ;] 		--[ 0  ColumnShell:(ORDERS).(O_TOTALPRICE)>>5; 1  ColumnShell:(ORDERS).(O_ORDERDATE)>>4; ]-- 		:[CUSTOMER, ORDERS, LINEITEM AS LINEITEM[197906090], LINEITEM, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(CUSTOMER).(C_NAME))   ,1:   (ColumnShell:(CUSTOMER).(C_CUSTKEY))   ,2:   (ColumnShell:(ORDERS).(O_ORDERKEY))   ,3:   (ColumnShell:(ORDERS).(O_ORDERDATE))   ,4:   (ColumnShell:(ORDERS).(O_TOTALPRICE))   ,]		 [ !(0) customer , c_name! ; !(1) customer , c_custkey! ; !(2) orders , o_orderkey! ; !(3) orders , o_orderdate! ; !(4) orders , o_totalprice! ; !(5) nameless , nameless! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_NAME)>>1; 1  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERKEY)>>3; 3  ColumnShell:(ORDERS).(O_ORDERDATE)>>4; 4  ColumnShell:(ORDERS).(O_TOTALPRICE)>>5; 5  ColumnShell:(LINEITEM).(L_QUANTITY)>>6; ]-- 		:[CUSTOMER, ORDERS, LINEITEM AS LINEITEM[197906090], LINEITEM, ]
+
+------------    BinaryJoinNode<1:FALSE>:[Inner Join --- ((ColumnShell:(ORDERS).(O_ORDERKEY)) = (ColumnShell:(LINEITEM).(L_ORDERKEY)))]		 [ !(0) customer , c_name! ; !(1) customer , c_custkey! ; !(2) orders , o_orderkey! ; !(3) orders , o_orderdate! ; !(4) orders , o_totalprice! ; !(5) lineitem , l_quantity! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_NAME)>>1; 1  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERKEY)>>3; 3  ColumnShell:(ORDERS).(O_ORDERDATE)>>4; 4  ColumnShell:(ORDERS).(O_TOTALPRICE)>>5; 5  ColumnShell:(LINEITEM).(L_QUANTITY)>>-1; 6  ColumnShell:(LINEITEM).(L_ORDERKEY)>>-2; ]-- 		:[CUSTOMER, ORDERS, LINEITEM AS LINEITEM[197906090], LINEITEM, ]
+
+----------------    BinaryJoinNode<1:TRUE>:[Inner Join --- ((ColumnShell:(CUSTOMER).(C_CUSTKEY)) = (ColumnShell:(ORDERS).(O_CUSTKEY)))]		 [ !(0) customer , c_name! ; !(1) customer , c_custkey! ; !(2) orders , o_orderkey! ; !(3) orders , o_orderdate! ; !(4) orders , o_totalprice! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_NAME)>>1; 1  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERKEY)>>-1; 3  ColumnShell:(ORDERS).(O_ORDERDATE)>>-2; 4  ColumnShell:(ORDERS).(O_TOTALPRICE)>>-3; 5  ColumnShell:(ORDERS).(O_CUSTKEY)>>-4; ]-- 		:[CUSTOMER, ORDERS, LINEITEM AS LINEITEM[197906090], ]
+
+--------------------    TableNode:[CUSTOMER]		 [ !(0) customer , c_name! ; !(1) customer , c_custkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_NAME)>>2; 1  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; ]-- 		:[CUSTOMER, ]
+
+--------------------    BinaryJoinNode<0:FALSE>:[Semi Join --- ((ColumnShell:(ORDERS).(O_ORDERKEY)) = (ColumnShell:(LINEITEM[197906090]).(L_ORDERKEY)))]		 [ !(0) orders , o_orderkey! ; !(1) orders , o_orderdate! ; !(2) orders , o_totalprice! ; !(3) orders , o_custkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 1  ColumnShell:(ORDERS).(O_ORDERDATE)>>2; 2  ColumnShell:(ORDERS).(O_TOTALPRICE)>>3; 3  ColumnShell:(ORDERS).(O_CUSTKEY)>>4; 4  ColumnShell:(LINEITEM[197906090]).(L_ORDERKEY)>>-1; ]-- 		:[ORDERS, LINEITEM AS LINEITEM[197906090], ]
+
+------------------------    TableNode:[ORDERS]		 [ !(0) orders , o_orderkey! ; !(1) orders , o_orderdate! ; !(2) orders , o_totalprice! ; !(3) orders , o_custkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 1  ColumnShell:(ORDERS).(O_ORDERDATE)>>5; 2  ColumnShell:(ORDERS).(O_TOTALPRICE)>>4; 3  ColumnShell:(ORDERS).(O_CUSTKEY)>>2; ]-- 		:[ORDERS, ]
+
+------------------------    FilterNode:[((ColumnShell:(PLACEHOLDER_TABLE_19790609).(1)) > (312))]		 [ !(0) lineitem[197906090] , l_orderkey! ;] 		--[ 0  ColumnShell:(PLACEHOLDER_TABLE_19790609).(1)>>2; ]-- 		:[LINEITEM AS LINEITEM[197906090], ]
+
+----------------------------    GroupbyNode: [0:   (ColumnShell:(LINEITEM[197906090]).(L_ORDERKEY))   ,]		 [ !(0) lineitem[197906090] , l_orderkey! ; !(1) meaningless_table_name , additional_groupby_expr_0! ;] 		--[ 0  ColumnShell:(LINEITEM[197906090]).(L_ORDERKEY)>>1; 1  ColumnShell:(LINEITEM[197906090]).(L_QUANTITY)>>2; ]-- 		:[LINEITEM AS LINEITEM[197906090], ]
+
+--------------------------------    TableNode:[LINEITEM AS LINEITEM[197906090]]		 [ !(0) lineitem[197906090] , l_orderkey! ; !(1) lineitem[197906090] , l_quantity! ;] 		--[ 0  ColumnShell:(LINEITEM[197906090]).(L_ORDERKEY)>>1; 1  ColumnShell:(LINEITEM[197906090]).(L_QUANTITY)>>5; ]-- 		:[LINEITEM AS LINEITEM[197906090], ]
+
+----------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_quantity! ; !(1) lineitem , l_orderkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_QUANTITY)>>5; 1  ColumnShell:(LINEITEM).(L_ORDERKEY)>>1; ]-- 		:[LINEITEM, ]
+-------------------------------------------------------------------------------------------------------19
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/19.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [LINEITEM : PART]
+brp->GetMyOutputName() : primary_table_name = [PART : PART]
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ([SQLFunction:(SUM)](((ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)) + (((1) - (ColumnShell:(LINEITEM).(L_DISCOUNT))))))) AS REVENUE
+, ]		 [ !(0) nameless , revenue! ;] 		--[ ]-- 		:[LINEITEM, PART, ]
+
+----    GroupbyNode: []		 [ !(0) nameless , revenue! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; ]-- 		:[LINEITEM, PART, ]
+
+--------    FilterNode:[((((((((ColumnShell:(PART).(P_BRAND)) = ("Brand#21")) and (ColumnShell:(PART).(P_CONTAINER)) in (("SM CASE"), ("SM BOX"), ("SM PACK"), ("SM PKG"))) and ((ColumnShell:(LINEITEM).(L_QUANTITY)) >= (3))) and ((ColumnShell:(LINEITEM).(L_QUANTITY)) <= ((3) + (10)))) and (ColumnShell:(PART).(P_SIZE)) between (1) and (5)) or ((((((ColumnShell:(PART).(P_BRAND)) = ("Brand#51")) and (ColumnShell:(PART).(P_CONTAINER)) in (("MED BAG"), ("MED BOX"), ("MED PKG"), ("MED PACK"))) and ((ColumnShell:(LINEITEM).(L_QUANTITY)) >= (20))) and ((ColumnShell:(LINEITEM).(L_QUANTITY)) <= ((20) + (10)))) and (ColumnShell:(PART).(P_SIZE)) between (1) and (10))) or ((((((ColumnShell:(PART).(P_BRAND)) = ("Brand#32")) and (ColumnShell:(PART).(P_CONTAINER)) in (("LG CASE"), ("LG BOX"), ("LG PACK"), ("LG PKG"))) and ((ColumnShell:(LINEITEM).(L_QUANTITY)) >= (27))) and ((ColumnShell:(LINEITEM).(L_QUANTITY)) <= ((27) + (10)))) and (ColumnShell:(PART).(P_SIZE)) between (1) and (15)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(PART).(P_BRAND)>>3; 3  ColumnShell:(PART).(P_CONTAINER)>>4; 4  ColumnShell:(LINEITEM).(L_QUANTITY)>>5; 5  ColumnShell:(PART).(P_SIZE)>>6; ]-- 		:[LINEITEM, PART, ]
+
+------------    BinaryJoinNode<1:TRUE>:[Inner Join --- ((ColumnShell:(PART).(P_PARTKEY)) = (ColumnShell:(LINEITEM).(L_PARTKEY)))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) part , p_brand! ; !(3) part , p_container! ; !(4) lineitem , l_quantity! ; !(5) part , p_size! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(PART).(P_BRAND)>>-1; 3  ColumnShell:(PART).(P_CONTAINER)>>-2; 4  ColumnShell:(LINEITEM).(L_QUANTITY)>>3; 5  ColumnShell:(PART).(P_SIZE)>>-3; 6  ColumnShell:(PART).(P_PARTKEY)>>-4; 7  ColumnShell:(LINEITEM).(L_PARTKEY)>>4; ]-- 		:[LINEITEM, PART, ]
+
+----------------    FilterNode:[((ColumnShell:(LINEITEM).(L_SHIPMODE)) in (("AIR"), ("AIR REG")) and ((ColumnShell:(LINEITEM).(L_SHIPINSTRUCT)) = ("DELIVER IN PERSON")))]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_quantity! ; !(3) lineitem , l_partkey! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>1; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>2; 2  ColumnShell:(LINEITEM).(L_QUANTITY)>>3; 3  ColumnShell:(LINEITEM).(L_PARTKEY)>>4; 4  ColumnShell:(LINEITEM).(L_SHIPMODE)>>5; 5  ColumnShell:(LINEITEM).(L_SHIPINSTRUCT)>>6; ]-- 		:[LINEITEM, ]
+
+--------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_extendedprice! ; !(1) lineitem , l_discount! ; !(2) lineitem , l_quantity! ; !(3) lineitem , l_partkey! ; !(4) lineitem , l_shipmode! ; !(5) lineitem , l_shipinstruct! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_EXTENDEDPRICE)>>6; 1  ColumnShell:(LINEITEM).(L_DISCOUNT)>>7; 2  ColumnShell:(LINEITEM).(L_QUANTITY)>>5; 3  ColumnShell:(LINEITEM).(L_PARTKEY)>>2; 4  ColumnShell:(LINEITEM).(L_SHIPMODE)>>15; 5  ColumnShell:(LINEITEM).(L_SHIPINSTRUCT)>>14; ]-- 		:[LINEITEM, ]
+
+----------------    TableNode:[PART]		 [ !(0) part , p_brand! ; !(1) part , p_container! ; !(2) part , p_size! ; !(3) part , p_partkey! ;] 		--[ 0  ColumnShell:(PART).(P_BRAND)>>4; 1  ColumnShell:(PART).(P_CONTAINER)>>7; 2  ColumnShell:(PART).(P_SIZE)>>6; 3  ColumnShell:(PART).(P_PARTKEY)>>1; ]-- 		:[PART, ]
+-------------------------------------------------------------------------------------------------------20
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/20.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [SUPPLIER : NATION]
+brp->GetMyOutputName() : primary_table_name = [NATION : NATION]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode: [ ((ColumnShell:(SUPPLIER).(S_NAME)))
+, ((ColumnShell:(SUPPLIER).(S_ADDRESS)))
+, ]		 [ !(0) unnamedqueryresult , s_name! ; !(1) unnamedqueryresult , s_address! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NAME)>>1; 1  ColumnShell:(SUPPLIER).(S_ADDRESS)>>2; ]-- 		:[SUPPLIER, PARTSUPP AS PARTSUPP[197906091], PART AS PART[197906090][197906091], ( %SUBQUERY% ) AS AGG_LINEITEM[197906091], NATION, ]
+
+----    SortNode: [((ColumnShell:(SUPPLIER).(S_NAME))) ASC, ]		 [ !(0) supplier , s_name! ; !(1) supplier , s_address! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NAME)>>1; 1  ColumnShell:(SUPPLIER).(S_ADDRESS)>>2; ]-- 		:[SUPPLIER, PARTSUPP AS PARTSUPP[197906091], PART AS PART[197906090][197906091], ( %SUBQUERY% ) AS AGG_LINEITEM[197906091], NATION, ]
+
+--------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_NATIONKEY)) = (ColumnShell:(NATION).(N_NATIONKEY)))]		 [ !(0) supplier , s_name! ; !(1) supplier , s_address! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NAME)>>1; 1  ColumnShell:(SUPPLIER).(S_ADDRESS)>>2; 2  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>3; 3  ColumnShell:(NATION).(N_NATIONKEY)>>-1; ]-- 		:[SUPPLIER, PARTSUPP AS PARTSUPP[197906091], PART AS PART[197906090][197906091], ( %SUBQUERY% ) AS AGG_LINEITEM[197906091], NATION, ]
+
+------------    BinaryJoinNode<0:FALSE>:[Semi Join --- ((ColumnShell:(SUPPLIER).(S_SUPPKEY)) = (ColumnShell:(PARTSUPP[197906091]).(PS_SUPPKEY)))]		 [ !(0) supplier , s_name! ; !(1) supplier , s_address! ; !(2) supplier , s_nationkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NAME)>>1; 1  ColumnShell:(SUPPLIER).(S_ADDRESS)>>2; 2  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>3; 3  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>4; 4  ColumnShell:(PARTSUPP[197906091]).(PS_SUPPKEY)>>-1; ]-- 		:[SUPPLIER, PARTSUPP AS PARTSUPP[197906091], PART AS PART[197906090][197906091], ( %SUBQUERY% ) AS AGG_LINEITEM[197906091], ]
+
+----------------    TableNode:[SUPPLIER]		 [ !(0) supplier , s_name! ; !(1) supplier , s_address! ; !(2) supplier , s_nationkey! ; !(3) supplier , s_suppkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NAME)>>2; 1  ColumnShell:(SUPPLIER).(S_ADDRESS)>>3; 2  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 3  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; ]-- 		:[SUPPLIER, ]
+
+----------------    FilterNode:[(((ColumnShell:(AGG_LINEITEM[197906091]).(AGG_SUPPKEY)) = (ColumnShell:(PARTSUPP[197906091]).(PS_SUPPKEY))) and ((ColumnShell:(PARTSUPP[197906091]).(PS_AVAILQTY)) > (ColumnShell:(AGG_LINEITEM[197906091]).(AGG_QUANTITY))))]		 [ !(0) partsupp[197906091] , ps_suppkey! ;] 		--[ 0  ColumnShell:(PARTSUPP[197906091]).(PS_SUPPKEY)>>1; 1  ColumnShell:(AGG_LINEITEM[197906091]).(AGG_SUPPKEY)>>2; 2  ColumnShell:(PARTSUPP[197906091]).(PS_AVAILQTY)>>3; 3  ColumnShell:(AGG_LINEITEM[197906091]).(AGG_QUANTITY)>>4; ]-- 		:[PARTSUPP AS PARTSUPP[197906091], PART AS PART[197906090][197906091], ( %SUBQUERY% ) AS AGG_LINEITEM[197906091], ]
+
+--------------------    BinaryJoinNode<0:FALSE>:[Inner Join --- ((ColumnShell:(AGG_LINEITEM[197906091]).(AGG_PARTKEY)) = (ColumnShell:(PARTSUPP[197906091]).(PS_PARTKEY)))]		 [ !(0) partsupp[197906091] , ps_suppkey! ; !(1) agg_lineitem[197906091] , agg_suppkey! ; !(2) partsupp[197906091] , ps_availqty! ; !(3) agg_lineitem[197906091] , agg_quantity! ;] 		--[ 0  ColumnShell:(PARTSUPP[197906091]).(PS_SUPPKEY)>>1; 1  ColumnShell:(AGG_LINEITEM[197906091]).(AGG_SUPPKEY)>>-1; 2  ColumnShell:(PARTSUPP[197906091]).(PS_AVAILQTY)>>2; 3  ColumnShell:(AGG_LINEITEM[197906091]).(AGG_QUANTITY)>>-2; 4  ColumnShell:(AGG_LINEITEM[197906091]).(AGG_PARTKEY)>>-3; 5  ColumnShell:(PARTSUPP[197906091]).(PS_PARTKEY)>>3; ]-- 		:[PARTSUPP AS PARTSUPP[197906091], PART AS PART[197906090][197906091], ( %SUBQUERY% ) AS AGG_LINEITEM[197906091], ]
+
+------------------------    BinaryJoinNode<0:FALSE>:[Semi Join --- ((ColumnShell:(PARTSUPP[197906091]).(PS_PARTKEY)) = (ColumnShell:(PART[197906090][197906091]).(P_PARTKEY)))]		 [ !(0) partsupp[197906091] , ps_suppkey! ; !(1) partsupp[197906091] , ps_availqty! ; !(2) partsupp[197906091] , ps_partkey! ;] 		--[ 0  ColumnShell:(PARTSUPP[197906091]).(PS_SUPPKEY)>>1; 1  ColumnShell:(PARTSUPP[197906091]).(PS_AVAILQTY)>>2; 2  ColumnShell:(PARTSUPP[197906091]).(PS_PARTKEY)>>3; 3  ColumnShell:(PART[197906090][197906091]).(P_PARTKEY)>>-1; ]-- 		:[PARTSUPP AS PARTSUPP[197906091], PART AS PART[197906090][197906091], ]
+
+----------------------------    TableNode:[PARTSUPP AS PARTSUPP[197906091]]		 [ !(0) partsupp[197906091] , ps_suppkey! ; !(1) partsupp[197906091] , ps_availqty! ; !(2) partsupp[197906091] , ps_partkey! ;] 		--[ 0  ColumnShell:(PARTSUPP[197906091]).(PS_SUPPKEY)>>2; 1  ColumnShell:(PARTSUPP[197906091]).(PS_AVAILQTY)>>3; 2  ColumnShell:(PARTSUPP[197906091]).(PS_PARTKEY)>>1; ]-- 		:[PARTSUPP AS PARTSUPP[197906091], ]
+
+----------------------------    FilterNode:[(ColumnShell:(PART[197906090][197906091]).(P_NAME)) like ("aquamarine%")]		 [ !(0) part[197906090][197906091] , p_partkey! ;] 		--[ 0  ColumnShell:(PART[197906090][197906091]).(P_PARTKEY)>>1; 1  ColumnShell:(PART[197906090][197906091]).(P_NAME)>>2; ]-- 		:[PART AS PART[197906090][197906091], ]
+
+--------------------------------    TableNode:[PART AS PART[197906090][197906091]]		 [ !(0) part[197906090][197906091] , p_partkey! ; !(1) part[197906090][197906091] , p_name! ;] 		--[ 0  ColumnShell:(PART[197906090][197906091]).(P_PARTKEY)>>1; 1  ColumnShell:(PART[197906090][197906091]).(P_NAME)>>2; ]-- 		:[PART AS PART[197906090][197906091], ]
+
+------------------------    ColumnNode: [ ((ColumnShell:(LINEITEM).(L_PARTKEY))) AS AGG_PARTKEY
+, ((ColumnShell:(LINEITEM).(L_SUPPKEY))) AS AGG_SUPPKEY
+, (((0.500000) + [SQLFunction:(SUM)]((ColumnShell:(LINEITEM).(L_QUANTITY))))) AS AGG_QUANTITY
+, ]		 [ !(0) agg_lineitem[197906091] , agg_suppkey! ; !(1) agg_lineitem[197906091] , agg_quantity! ; !(2) agg_lineitem[197906091] , agg_partkey! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS AGG_LINEITEM[197906091], ]
+
+----------------------------    GroupbyNode: [0:   (ColumnShell:(LINEITEM).(L_PARTKEY))   ,1:   (ColumnShell:(LINEITEM).(L_SUPPKEY))   ,]		 [ !(0) lineitem , agg_partkey! ; !(1) lineitem , agg_suppkey! ; !(2) nameless , agg_quantity! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_PARTKEY)>>1; 1  ColumnShell:(LINEITEM).(L_SUPPKEY)>>2; 2  ColumnShell:(LINEITEM).(L_QUANTITY)>>3; ]-- 		:[LINEITEM, ]
+
+--------------------------------    FilterNode:[(((ColumnShell:(LINEITEM).(L_SHIPDATE)) >= ("1997-01-01")) and ((ColumnShell:(LINEITEM).(L_SHIPDATE)) < ("1998-01-01")))]		 [ !(0) lineitem , l_partkey! ; !(1) lineitem , l_suppkey! ; !(2) lineitem , l_quantity! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_PARTKEY)>>1; 1  ColumnShell:(LINEITEM).(L_SUPPKEY)>>2; 2  ColumnShell:(LINEITEM).(L_QUANTITY)>>3; 3  ColumnShell:(LINEITEM).(L_SHIPDATE)>>4; ]-- 		:[LINEITEM, ]
+
+------------------------------------    TableNode:[LINEITEM]		 [ !(0) lineitem , l_partkey! ; !(1) lineitem , l_suppkey! ; !(2) lineitem , l_quantity! ; !(3) lineitem , l_shipdate! ;] 		--[ 0  ColumnShell:(LINEITEM).(L_PARTKEY)>>2; 1  ColumnShell:(LINEITEM).(L_SUPPKEY)>>3; 2  ColumnShell:(LINEITEM).(L_QUANTITY)>>5; 3  ColumnShell:(LINEITEM).(L_SHIPDATE)>>11; ]-- 		:[LINEITEM, ]
+
+------------    FilterNode:[((ColumnShell:(NATION).(N_NAME)) = ("ALGERIA"))]		 [ !(0) nation , n_nationkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NATIONKEY)>>1; 1  ColumnShell:(NATION).(N_NAME)>>2; ]-- 		:[NATION, ]
+
+----------------    TableNode:[NATION]		 [ !(0) nation , n_nationkey! ; !(1) nation , n_name! ;] 		--[ 0  ColumnShell:(NATION).(N_NATIONKEY)>>1; 1  ColumnShell:(NATION).(N_NAME)>>2; ]-- 		:[NATION, ]
+-------------------------------------------------------------------------------------------------------21
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/21.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+brp->GetMyOutputName() : primary_table_name = [SUPPLIER : SUPPLIER]
+brp->GetMyOutputName() : primary_table_name = [L1 : SUPPLIER]
+brp->GetMyOutputName() : primary_table_name = [ORDERS : ORDERS]
+brp->GetMyOutputName() : primary_table_name = [NATION : NATION]
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(SUPPLIER).(S_NAME)))
+, ([SQLFunction:(COUNT)]((0), (*))) AS NUMWAIT
+, ]		 [ !(0) supplier , s_name! ; !(1) nameless , numwait! ;] 		--[ ]-- 		:[SUPPLIER, LINEITEM AS L1, LINEITEM AS L3[197906091], LINEITEM AS L2[197906090], ORDERS, NATION, ]
+
+----    SortNode: [((ColumnShell:(!-!SELECT_ALIAS!-!).(NUMWAIT))) DESC, ((ColumnShell:(SUPPLIER).(S_NAME))) ASC, ]		 [ !(0) supplier , s_name! ; !(1) nameless , numwait! ;] 		--[ 0  ColumnShell:(!-!SELECT_ALIAS!-!).(NUMWAIT)>>2; 1  ColumnShell:(SUPPLIER).(S_NAME)>>1; ]-- 		:[SUPPLIER, LINEITEM AS L1, LINEITEM AS L3[197906091], LINEITEM AS L2[197906090], ORDERS, NATION, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(SUPPLIER).(S_NAME))   ,]		 [ !(0) supplier , s_name! ; !(1) nameless , numwait! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NAME)>>1; ]-- 		:[SUPPLIER, LINEITEM AS L1, LINEITEM AS L3[197906091], LINEITEM AS L2[197906090], ORDERS, NATION, ]
+
+------------    BinaryJoinNode<-1:FALSE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_NATIONKEY)) = (ColumnShell:(NATION).(N_NATIONKEY)))]		 [ !(0) supplier , s_name! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NAME)>>1; 1  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>2; 2  ColumnShell:(NATION).(N_NATIONKEY)>>-1; ]-- 		:[SUPPLIER, LINEITEM AS L1, LINEITEM AS L3[197906091], LINEITEM AS L2[197906090], ORDERS, NATION, ]
+
+----------------    BinaryJoinNode<1:FALSE>:[Inner Join --- ((ColumnShell:(ORDERS).(O_ORDERKEY)) = (ColumnShell:(L1).(L_ORDERKEY)))]		 [ !(0) supplier , s_name! ; !(1) supplier , s_nationkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NAME)>>1; 1  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>2; 2  ColumnShell:(ORDERS).(O_ORDERKEY)>>-1; 3  ColumnShell:(L1).(L_ORDERKEY)>>3; ]-- 		:[SUPPLIER, LINEITEM AS L1, LINEITEM AS L3[197906091], LINEITEM AS L2[197906090], ORDERS, ]
+
+--------------------    BinaryJoinNode<1:TRUE>:[Inner Join --- ((ColumnShell:(SUPPLIER).(S_SUPPKEY)) = (ColumnShell:(L1).(L_SUPPKEY)))]		 [ !(0) supplier , s_name! ; !(1) supplier , s_nationkey! ; !(2) l1 , l_orderkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NAME)>>1; 1  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>2; 2  ColumnShell:(L1).(L_ORDERKEY)>>-1; 3  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>3; 4  ColumnShell:(L1).(L_SUPPKEY)>>-2; ]-- 		:[SUPPLIER, LINEITEM AS L1, LINEITEM AS L3[197906091], LINEITEM AS L2[197906090], ]
+
+------------------------    TableNode:[SUPPLIER]		 [ !(0) supplier , s_name! ; !(1) supplier , s_nationkey! ; !(2) supplier , s_suppkey! ;] 		--[ 0  ColumnShell:(SUPPLIER).(S_NAME)>>2; 1  ColumnShell:(SUPPLIER).(S_NATIONKEY)>>4; 2  ColumnShell:(SUPPLIER).(S_SUPPKEY)>>1; ]-- 		:[SUPPLIER, ]
+
+------------------------    BinaryJoinNode<0:FALSE>:[Semi Join --- (((ColumnShell:(L2[197906090]).(L_ORDERKEY)) = (ColumnShell:(L1).(L_ORDERKEY))) and ((ColumnShell:(L2[197906090]).(L_SUPPKEY)) != (ColumnShell:(L1).(L_SUPPKEY))))]		 [ !(0) l1 , l_orderkey! ; !(1) l1 , l_suppkey! ;] 		--[ 0  ColumnShell:(L1).(L_ORDERKEY)>>1; 1  ColumnShell:(L1).(L_SUPPKEY)>>2; 2  ColumnShell:(L2[197906090]).(L_ORDERKEY)>>-1; 3  ColumnShell:(L2[197906090]).(L_SUPPKEY)>>-2; ]-- 		:[LINEITEM AS L1, LINEITEM AS L3[197906091], LINEITEM AS L2[197906090], ]
+
+----------------------------    BinaryJoinNode<0:FALSE>:[AntiJoin --- (((ColumnShell:(L3[197906091]).(L_ORDERKEY)) = (ColumnShell:(L1).(L_ORDERKEY))) and ((ColumnShell:(L3[197906091]).(L_SUPPKEY)) != (ColumnShell:(L1).(L_SUPPKEY))))]		 [ !(0) l1 , l_orderkey! ; !(1) l1 , l_suppkey! ;] 		--[ 0  ColumnShell:(L1).(L_ORDERKEY)>>1; 1  ColumnShell:(L1).(L_SUPPKEY)>>2; 2  ColumnShell:(L3[197906091]).(L_ORDERKEY)>>-1; 3  ColumnShell:(L3[197906091]).(L_SUPPKEY)>>-2; ]-- 		:[LINEITEM AS L1, LINEITEM AS L3[197906091], ]
+
+--------------------------------    FilterNode:[((ColumnShell:(L1).(L_RECEIPTDATE)) > (ColumnShell:(L1).(L_COMMITDATE)))]		 [ !(0) l1 , l_orderkey! ; !(1) l1 , l_suppkey! ;] 		--[ 0  ColumnShell:(L1).(L_ORDERKEY)>>1; 1  ColumnShell:(L1).(L_SUPPKEY)>>2; 2  ColumnShell:(L1).(L_RECEIPTDATE)>>3; 3  ColumnShell:(L1).(L_COMMITDATE)>>4; ]-- 		:[LINEITEM AS L1, ]
+
+------------------------------------    TableNode:[LINEITEM AS L1]		 [ !(0) l1 , l_orderkey! ; !(1) l1 , l_suppkey! ; !(2) l1 , l_receiptdate! ; !(3) l1 , l_commitdate! ;] 		--[ 0  ColumnShell:(L1).(L_ORDERKEY)>>1; 1  ColumnShell:(L1).(L_SUPPKEY)>>3; 2  ColumnShell:(L1).(L_RECEIPTDATE)>>13; 3  ColumnShell:(L1).(L_COMMITDATE)>>12; ]-- 		:[LINEITEM AS L1, ]
+
+--------------------------------    FilterNode:[((ColumnShell:(L3[197906091]).(L_RECEIPTDATE)) > (ColumnShell:(L3[197906091]).(L_COMMITDATE)))]		 [ !(0) l3[197906091] , l_orderkey! ; !(1) l3[197906091] , l_suppkey! ;] 		--[ 0  ColumnShell:(L3[197906091]).(L_ORDERKEY)>>1; 1  ColumnShell:(L3[197906091]).(L_SUPPKEY)>>2; 2  ColumnShell:(L3[197906091]).(L_RECEIPTDATE)>>3; 3  ColumnShell:(L3[197906091]).(L_COMMITDATE)>>4; ]-- 		:[LINEITEM AS L3[197906091], ]
+
+------------------------------------    TableNode:[LINEITEM AS L3[197906091]]		 [ !(0) l3[197906091] , l_orderkey! ; !(1) l3[197906091] , l_suppkey! ; !(2) l3[197906091] , l_receiptdate! ; !(3) l3[197906091] , l_commitdate! ;] 		--[ 0  ColumnShell:(L3[197906091]).(L_ORDERKEY)>>1; 1  ColumnShell:(L3[197906091]).(L_SUPPKEY)>>3; 2  ColumnShell:(L3[197906091]).(L_RECEIPTDATE)>>13; 3  ColumnShell:(L3[197906091]).(L_COMMITDATE)>>12; ]-- 		:[LINEITEM AS L3[197906091], ]
+
+----------------------------    TableNode:[LINEITEM AS L2[197906090]]		 [ !(0) l2[197906090] , l_orderkey! ; !(1) l2[197906090] , l_suppkey! ;] 		--[ 0  ColumnShell:(L2[197906090]).(L_ORDERKEY)>>1; 1  ColumnShell:(L2[197906090]).(L_SUPPKEY)>>3; ]-- 		:[LINEITEM AS L2[197906090], ]
+
+--------------------    FilterNode:[((ColumnShell:(ORDERS).(O_ORDERSTATUS)) = ("F"))]		 [ !(0) orders , o_orderkey! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 1  ColumnShell:(ORDERS).(O_ORDERSTATUS)>>2; ]-- 		:[ORDERS, ]
+
+------------------------    TableNode:[ORDERS]		 [ !(0) orders , o_orderkey! ; !(1) orders , o_orderstatus! ;] 		--[ 0  ColumnShell:(ORDERS).(O_ORDERKEY)>>1; 1  ColumnShell:(ORDERS).(O_ORDERSTATUS)>>3; ]-- 		:[ORDERS, ]
+
+----------------    FilterNode:[((ColumnShell:(NATION).(N_NAME)) = ("SAUDI ARABIA"))]		 [ !(0) nation , n_nationkey! ;] 		--[ 0  ColumnShell:(NATION).(N_NATIONKEY)>>1; 1  ColumnShell:(NATION).(N_NAME)>>2; ]-- 		:[NATION, ]
+
+--------------------    TableNode:[NATION]		 [ !(0) nation , n_nationkey! ; !(1) nation , n_name! ;] 		--[ 0  ColumnShell:(NATION).(N_NATIONKEY)>>1; 1  ColumnShell:(NATION).(N_NAME)>>2; ]-- 		:[NATION, ]
+-------------------------------------------------------------------------------------------------------22
+
+
+
+Building database schema from File:/var/rateup/tpch/tpch.schema.json---------OK!
+
+Parsing SQL in File:test_tpch_queries/22.sql---------OK!
+
+Building Query Plan---------OK!
+We execute optimization policy: Predicate Pushdown
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: Subquery Unnesting
+query plan ends in optimizer...
+We execute optimization policy: UncorrelatedSubqueryHandling: Create init plans!
+query plan ends in optimizer...
+We execute optimization policy: JoinSubqueryRemoving: unnesting agg-jon subqueries!
+query plan ends in optimizer...
+We execute optimization policy: TwoPhaseJoin -- Converting a complext join into a simple single-column eqaul-join and a following filter
+query plan ends in optimizer...
+We execute optimization policy: SetPrimaryForeignJoin -- determine each sort whether a primary/foreign join
+query plan ends in optimizer...
+We execute optimization policy: HavingToFilter -- using a filter node to execute having in group
+query plan ends in optimizer...
+We execute optimization policy: Query Tree Formation
+query plan ends in optimizer...
+
+Optimizing Query Plan---------OK!
+
+
+    ColumnNode(R): [ ((ColumnShell:(CUSTSALE).(CNTRYCODE)))
+, ([SQLFunction:(COUNT)]((0), (*))) AS NUMCUST
+, ([SQLFunction:(SUM)]((ColumnShell:(CUSTSALE).(C_ACCTBAL)))) AS TOTACCTBAL
+, ]		 [ !(0) custsale , cntrycode! ; !(1) nameless , numcust! ; !(2) nameless , totacctbal! ;] 		--[ ]-- 		:[( %SUBQUERY% ) AS CUSTSALE, ]
+
+----    SortNode: [((ColumnShell:(CUSTSALE).(CNTRYCODE))) ASC, ]		 [ !(0) custsale , cntrycode! ; !(1) nameless , numcust! ; !(2) nameless , totacctbal! ;] 		--[ 0  ColumnShell:(CUSTSALE).(CNTRYCODE)>>1; ]-- 		:[( %SUBQUERY% ) AS CUSTSALE, ]
+
+--------    GroupbyNode: [0:   (ColumnShell:(CUSTSALE).(CNTRYCODE))   ,]		 [ !(0) custsale , cntrycode! ; !(1) nameless , numcust! ; !(2) nameless , totacctbal! ;] 		--[ 0  ColumnShell:(CUSTSALE).(CNTRYCODE)>>1; 1  ColumnShell:(CUSTSALE).(C_ACCTBAL)>>2; ]-- 		:[( %SUBQUERY% ) AS CUSTSALE, ]
+
+------------    ColumnNode: [ ([SQLFunction:(SUBSTRING)]((ColumnShell:(CUSTOMER).(C_PHONE)), (1), (2))) AS CNTRYCODE
+, ((ColumnShell:(CUSTOMER).(C_ACCTBAL)))
+, ]		 [ !(0) custsale , cntrycode! ; !(1) custsale , c_acctbal! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_PHONE)>>1; 1  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>2; ]-- 		:[CUSTOMER, ORDERS AS ORDERS[197906090], ]
+
+----------------    BinaryJoinNode<0:FALSE>:[AntiJoin --- ((ColumnShell:(ORDERS[197906090]).(O_CUSTKEY)) = (ColumnShell:(CUSTOMER).(C_CUSTKEY)))]		 [ !(0) customer , c_phone! ; !(1) customer , c_acctbal! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_PHONE)>>1; 1  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>2; 2  ColumnShell:(ORDERS[197906090]).(O_CUSTKEY)>>-1; 3  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>3; ]-- 		:[CUSTOMER, ORDERS AS ORDERS[197906090], ]
+
+--------------------    FilterNode:[([SQLFunction:(SUBSTRING)]((ColumnShell:(CUSTOMER).(C_PHONE)), (1), (2)) in (("10"), ("24"), ("20"), ("17"), ("34"), ("28"), ("11")) and ((ColumnShell:(CUSTOMER).(C_ACCTBAL)) > ("[INIT_QUERY_RESULT]")))]		 [ !(0) customer , c_phone! ; !(1) customer , c_acctbal! ; !(2) customer , c_custkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_PHONE)>>1; 1  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>2; 2  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>3; ]-- 		:[CUSTOMER, ]
+
+------------------------    TableNode:[CUSTOMER]		 [ !(0) customer , c_phone! ; !(1) customer , c_acctbal! ; !(2) customer , c_custkey! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_PHONE)>>5; 1  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>6; 2  ColumnShell:(CUSTOMER).(C_CUSTKEY)>>1; ]-- 		:[CUSTOMER, ]
+
+--------------------    TableNode:[ORDERS AS ORDERS[197906090]]		 [ !(0) orders[197906090] , o_custkey! ;] 		--[ 0  ColumnShell:(ORDERS[197906090]).(O_CUSTKEY)>>2; ]-- 		:[ORDERS AS ORDERS[197906090], ]
+
+
+			INIT QUERY PLAN
+------------------------------------------------------
+
+    ColumnNode(R): [ ([SQLFunction:(AVG)]((ColumnShell:(CUSTOMER).(C_ACCTBAL))))
+, ]		 [ !(0) nameless , nameless! ;] 		--[ ]-- 		:[CUSTOMER, ]
+
+----    GroupbyNode: []		 [ !(0) nameless , nameless! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>1; ]-- 		:[CUSTOMER, ]
+
+--------    FilterNode:[(((ColumnShell:(CUSTOMER).(C_ACCTBAL)) > (0.000000)) and [SQLFunction:(SUBSTRING)]((ColumnShell:(CUSTOMER).(C_PHONE)), (1), (2)) in (("10"), ("24"), ("20"), ("17"), ("34"), ("28"), ("11")))]		 [ !(0) customer , c_acctbal! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>1; 1  ColumnShell:(CUSTOMER).(C_PHONE)>>2; ]-- 		:[CUSTOMER, ]
+
+------------    TableNode:[CUSTOMER]		 [ !(0) customer , c_acctbal! ; !(1) customer , c_phone! ;] 		--[ 0  ColumnShell:(CUSTOMER).(C_ACCTBAL)>>6; 1  ColumnShell:(CUSTOMER).(C_PHONE)>>5; ]-- 		:[CUSTOMER, ]
+-----------------------
+
+[       OK ] query.q_all (181 ms)
+[----------] 1 test from query (181 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (182 ms total)
+[  PASSED  ] 1 test.

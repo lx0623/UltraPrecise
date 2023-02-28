@@ -1,0 +1,4 @@
+create table t_decimal_underflow_scale1( f1 decimal not null );
+load data infile '' into table t_decimal_underflow_scale1 fields terminated by ',' ignore 2 lines;
+-9999999999.1
+-9999999999

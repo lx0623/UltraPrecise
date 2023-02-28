@@ -1,0 +1,7 @@
+*
+!src
+!CMakeLists.txt
+!dependency
+!genversion.sh
+!.build.config.cmake
+

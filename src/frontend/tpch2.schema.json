@@ -1,0 +1,480 @@
+{
+  "tables": [
+    {
+      "tablename": "PART",
+      "columns": [
+        {
+          "name": "P_PARTKEY",
+          "type": "integer",
+          "length": -1,
+          "allownull": true,
+          "primary": 1
+        },
+        {
+          "name": "P_NAME",
+          "type": "text",
+          "length": 55,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "P_MFGR",
+          "type": "text",
+          "length": 25,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "P_BRAND",
+          "type": "text",
+          "length": 10,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "P_TYPE",
+          "type": "text",
+          "length": 25,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "P_SIZE",
+          "type": "integer",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "P_CONTAINER",
+          "type": "text",
+          "length": 10,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "P_RETAILPRICE",
+          "type": "decimal",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "P_COMMENT",
+          "type": "text",
+          "length": 23,
+          "allownull": true,
+          "primary": 0
+        }
+      ]
+    },
+    {
+      "tablename": "SUPPLIER",
+      "columns": [
+        {
+          "name": "S_SUPPKEY",
+          "type": "integer",
+          "length": -1,
+          "allownull": true,
+          "primary": 1
+        },
+        {
+          "name": "S_NAME",
+          "type": "text",
+          "length": 25,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "S_ADDRESS",
+          "type": "text",
+          "length": 40,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "S_NATIONKEY",
+          "type": "integer",
+          "length": 40,
+          "allownull": false,
+          "primary": 0,
+          "references": "NATION.N_NATIONKEY"
+        },
+        {
+          "name": "S_PHONE",
+          "type": "text",
+          "length": 15,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "S_ACCTBAL",
+          "type": "decimal",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "S_COMMENT",
+          "type": "text",
+          "length": 101,
+          "allownull": true,
+          "primary": 0
+        }
+      ]
+    },
+    {
+      "tablename": "PARTSUPP",
+      "columns": [
+        {
+          "name": "PS_PARTKEY",
+          "type": "integer",
+          "length": 101,
+          "allownull": false,
+          "primary": 0,
+          "references": "PART.P_PARTKEY"
+        },
+        {
+          "name": "PS_SUPPKEY",
+          "type": "integer",
+          "length": 101,
+          "allownull": false,
+          "primary": 0,
+          "references": "SUPPLIER.S_SUPPKEY"
+        },
+        {
+          "name": "PS_AVAILQTY",
+          "type": "integer",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "PS_SUPPLYCOST",
+          "type": "decimal",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "PS_COMMENT",
+          "type": "text",
+          "length": 199,
+          "allownull": true,
+          "primary": 0
+        }
+      ]
+    },
+    {
+      "tablename": "CUSTOMER",
+      "columns": [
+        {
+          "name": "C_CUSTKEY",
+          "type": "integer",
+          "length": -1,
+          "allownull": true,
+          "primary": 1
+        },
+        {
+          "name": "C_NAME",
+          "type": "text",
+          "length": 25,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "C_ADDRESS",
+          "type": "text",
+          "length": 40,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "C_NATIONKEY",
+          "type": "integer",
+          "length": 40,
+          "allownull": false,
+          "primary": 0,
+          "references": "NATION.N_NATIONKEY"
+        },
+        {
+          "name": "C_PHONE",
+          "type": "text",
+          "length": 15,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "C_ACCTBAL",
+          "type": "decimal",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "C_MKTSEGMENT",
+          "type": "text",
+          "length": 10,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "C_COMMENT",
+          "type": "text",
+          "length": 117,
+          "allownull": true,
+          "primary": 0
+        }
+      ]
+    },
+    {
+      "tablename": "ORDERS",
+      "columns": [
+        {
+          "name": "O_ORDERKEY",
+          "type": "integer",
+          "length": -1,
+          "allownull": true,
+          "primary": 1
+        },
+        {
+          "name": "O_CUSTKEY",
+          "type": "integer",
+          "length": -1,
+          "allownull": false,
+          "primary": 0,
+          "references": "CUSTOMER.C_CUSTKEY"
+        },
+        {
+          "name": "O_ORDERSTATUS",
+          "type": "text",
+          "length": 1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "O_TOTALPRICE",
+          "type": "decimal",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "O_ORDERDATE",
+          "type": "text",
+          "length": 10,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "O_ORDERPRIORITY",
+          "type": "text",
+          "length": 15,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "O_CLERK",
+          "type": "text",
+          "length": 15,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "O_SHIPPRIORITY",
+          "type": "integer",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "O_COMMENT",
+          "type": "text",
+          "length": 79,
+          "allownull": true,
+          "primary": 0
+        }
+      ]
+    },
+    {
+      "tablename": "LINEITEM",
+      "columns": [
+        {
+          "name": "L_ORDERKEY",
+          "type": "integer",
+          "length": 79,
+          "allownull": false,
+          "primary": 0,
+          "references": "ORDERS.O_ORDERKEY"
+        },
+        {
+          "name": "L_PARTKEY",
+          "type": "integer",
+          "length": 79,
+          "allownull": false,
+          "primary": 0,
+          "references": "PART.P_PARTKEY"
+        },
+        {
+          "name": "L_SUPPKEY",
+          "type": "integer",
+          "length": 79,
+          "allownull": false,
+          "primary": 0,
+          "references": "SUPPLIER.S_SUPPKEY"
+        },
+        {
+          "name": "L_LINENUMBER",
+          "type": "integer",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_QUANTITY",
+          "type": "decimal",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_EXTENDEDPRICE",
+          "type": "decimal",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_DISCOUNT",
+          "type": "decimal",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_TAX",
+          "type": "decimal",
+          "length": -1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_RETURNFLAG",
+          "type": "text",
+          "length": 1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_LINESTATUS",
+          "type": "text",
+          "length": 1,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_SHIPDATE",
+          "type": "text",
+          "length": 10,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_COMMITDATE",
+          "type": "text",
+          "length": 10,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_RECEIPTDATE",
+          "type": "text",
+          "length": 10,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_SHIPINSTRUCT",
+          "type": "text",
+          "length": 25,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_SHIPMODE",
+          "type": "text",
+          "length": 10,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "L_COMMENT",
+          "type": "text",
+          "length": 44,
+          "allownull": true,
+          "primary": 0
+        }
+      ]
+    },
+    {
+      "tablename": "NATION",
+      "columns": [
+        {
+          "name": "N_NATIONKEY",
+          "type": "integer",
+          "length": -1,
+          "allownull": true,
+          "primary": 1
+        },
+        {
+          "name": "N_NAME",
+          "type": "text",
+          "length": 25,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "N_REGIONKEY",
+          "type": "integer",
+          "length": 25,
+          "allownull": false,
+          "primary": 0,
+          "references": "REGION.R_REGIONKEY"
+        },
+        {
+          "name": "N_COMMENT",
+          "type": "text",
+          "length": 152,
+          "allownull": true,
+          "primary": 0
+        }
+      ]
+    },
+    {
+      "tablename": "REGION",
+      "columns": [
+        {
+          "name": "R_REGIONKEY",
+          "type": "integer",
+          "length": -1,
+          "allownull": true,
+          "primary": 1
+        },
+        {
+          "name": "R_NAME",
+          "type": "text",
+          "length": 25,
+          "allownull": true,
+          "primary": 0
+        },
+        {
+          "name": "R_COMMENT",
+          "type": "text",
+          "length": 152,
+          "allownull": true,
+          "primary": 0
+        }
+      ]
+    }
+  ]
+}

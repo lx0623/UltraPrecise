@@ -1,0 +1,4 @@
+create table t_datetime_invalid2( f1 datetime not null );
+load data infile '' into table t_datetime_invalid2 fields terminated by ',' ignore 2 lines;
+2020-00-11 11:11:11
+2020-01-01 11:11:11

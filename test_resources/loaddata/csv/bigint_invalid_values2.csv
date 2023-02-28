@@ -1,0 +1,4 @@
+create table t_bigint_invalid_values2( f1 bigint not null );
+load data infile '/path/to/csv' into table t_bigint_invalid_values2 fields terminated by ',' ignore 2 lines;
+1a
+1

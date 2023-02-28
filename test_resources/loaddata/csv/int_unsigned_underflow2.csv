@@ -1,0 +1,4 @@
+create table t_int_unsigned_underflow( f1 int unsigned not null );
+load data infile '/path/to/csv' into table t_int_unsigned_underflow fields terminated by ',' ignore 2 lines;
+-2
+1

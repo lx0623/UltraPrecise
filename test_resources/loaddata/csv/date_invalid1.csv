@@ -1,0 +1,4 @@
+create table t_date_invalid1( f1 date not null );
+load data infile '' into table t_date_invalid1 fields terminated by ',' ignore 2 lines;
+abc
+2020-01-01

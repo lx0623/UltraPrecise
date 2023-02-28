@@ -1,0 +1,4 @@
+create table t_int_invalid_values1( f1 int not null );
+load data infile '/path/to/csv' into table t_int_invalid_values1 fields terminated by ',' ignore 2 lines;
+a
+1

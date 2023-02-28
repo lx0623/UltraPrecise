@@ -1,0 +1,4 @@
+create table t_load_char_int_bigint_float_double_decimal_datetime(f1 char(255), f2 int, f3 bigint, f4 float, f5 double, f6 decimal(15, 5), f7 datetime );
+aaaaa	1	11111	1.0001	1.0002	1123456789.11111	2019-12-01 01:01:01 
+bbbbb	2	22222	2.0002	2.0002	2123456789.22222	2019-12-02 02:02:02 
+ccccc	3	33333	3.0003	3.0003	3123456789.33333	2019-12-03 03:03:03 

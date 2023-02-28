@@ -1,0 +1,4 @@
+create table t_decimal_invalid( f1 decimal not null );
+load data infile '' into table t_decimal_invalid fields terminated by ',' ignore 2 lines;
+abc
+9999999999

@@ -1,0 +1,6 @@
+create table t_empty_value(f1 int, f2 char(64));
+load data infile '/path/to/csv' into table t_empty_value fields terminated by ',' enclosed by '"' ignore 2 lines;
+,
+1,""
+2,222
+3,"333"
