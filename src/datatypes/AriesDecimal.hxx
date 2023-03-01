@@ -320,9 +320,26 @@ public:
 
         uint32_t inner_res[DEC_LEN * 2] = {0};
 
-        uint64_t temp;
-        uint32_t carry;
+        // uint64_t temp;
+        // uint32_t carry;
 
+        // #pragma unroll
+        // for (int i = 0; i < DEC_LEN; i++)
+        // {
+        //     carry = 0;
+        //     #pragma unroll
+        //     for (int j = 0; j < DEC_LEN; j++)
+        //     {
+        //         // temp 表示范围最大值 2^64-1 右侧表达式 表示范围最大值 (2^32-1) * (2^32-1) + (2^32-1) + (2^32-1) = 2^64-1
+        //         temp = (uint64_t)v[i] * d.v[j] + inner_res[i + j] + carry;
+        //         carry = temp / PER_DEC_MAX_SCALE;
+        //         inner_res[i + j] = temp % PER_DEC_MAX_SCALE;
+        //     }
+        //     inner_res[i + DEC_LEN] = carry;
+        // }
+
+        uint32_t carry=0;
+        uint32_t inner_carry=0;
         #pragma unroll
         for (int i = 0; i < DEC_LEN; i++)
         {
@@ -330,13 +347,50 @@ public:
             #pragma unroll
             for (int j = 0; j < DEC_LEN; j++)
             {
-                // temp 表示范围最大值 2^64-1 右侧表达式 表示范围最大值 (2^32-1) * (2^32-1) + (2^32-1) + (2^32-1) = 2^64-1
-                temp = (uint64_t)v[i] * d.v[j] + inner_res[i + j] + carry;
-                carry = temp / PER_DEC_MAX_SCALE;
-                inner_res[i + j] = temp % PER_DEC_MAX_SCALE;
+                inner_carry = 0;
+                asm  volatile ("mad.lo.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j]));
+                asm  volatile ("madc.hi.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j+1]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j+1]));
+                asm  volatile ("addc.u32 %0, %1, %2;" : "=r"(inner_carry) : "r"(0), "r"(0));
+                asm  volatile ("addc.cc.u32 %0, %1, %2;" : "=r"(inner_res[i+j+1]) : "r"(inner_res[i+j+1]), "r"(carry));
+                asm  volatile ("addc.u32 %0, %1, %2;" : "=r"(carry) : "r"(0), "r"(0));
+                carry = carry + inner_carry;
             }
             inner_res[i + DEC_LEN] = carry;
         }
+
+        // uint32_t tmp_carry = 0;
+        // uint32_t grp_carry = 0;
+        // asm  volatile ("add.cc.u32 %0, %1, %2;" : "=r"(tmp_carry) : "r"(0), "r"(0));
+        // #pragma unroll
+        // for (int i=0; i < DEC_LEN; i++){
+        //     int j = 0;
+        //     for(j=0; j< DEC_LEN; j+=2){
+        //         asm  volatile ("madc.lo.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j]));
+        //         asm  volatile ("madc.hi.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j+1]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j+1]));
+        //     }
+
+        //     // 把当前的进位暂存
+        //     asm  volatile ("addc.u32 %0, %1, %2;" : "=r"(tmp_carry) : "r"(0), "r"(0));
+        //     // 添加上一组留下的进位
+        //     asm  volatile ("addc.cc.u32 %0, %1, %2;" : "=r"(inner_res[i+j-1]) : "r"(inner_res[i+j-1]), "r"(grp_carry));
+        //     // 将两个进位相加就是要传递给下一个组的进位 且 由于 grp_carry 和 tmp_carry <= 1 所以执行 CC.CF = 0
+        //     asm  volatile ("addc.u32 %0, %1, %2;" : "=r"(grp_carry) : "r"(tmp_carry), "r"(0));
+        // }
+
+        // #pragma unroll
+        // for (int i=0; i < DEC_LEN; i++){
+        //     int j = 0;
+        //     for(j=1; j< DEC_LEN; j+=2){
+        //         asm  volatile ("madc.lo.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j]));
+        //         asm  volatile ("madc.hi.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j+1]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j+1]));
+        //     }
+        //     // 把当前的进位暂存
+        //     asm  volatile ("addc.u32 %0, %1, %2;" : "=r"(tmp_carry) : "r"(0), "r"(0));
+        //     // 添加上一组留下的进位
+        //     asm  volatile ("addc.cc.u32 %0, %1, %2;" : "=r"(inner_res[i+j-1]) : "r"(inner_res[i+j-1]), "r"(grp_carry));
+        //     // 将两个进位相加就是要传递给下一个组的进位 且 由于 grp_carry 和 tmp_carry <= 1 所以执行 CC.CF = 0
+        //     asm  volatile ("addc.u32 %0, %1, %2;" : "=r"(grp_carry) : "r"(tmp_carry), "r"(0));
+        // }
 
         #pragma unroll
         for (int i = DEC_LEN; i >= 0; i--)
@@ -467,7 +521,7 @@ public:
         //被除数
         uint64_t dvt = divisor.ToUint64();
         uint64_t res = isMod ? (dvs % dvt) : (dvs / dvt + (((dvs % dvt) << 1) >= dvt ? 1 : 0));
-        
+
         v[1] = res / PER_DEC_MAX_SCALE;
         v[0] = res % PER_DEC_MAX_SCALE;
         return *this;

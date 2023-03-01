@@ -355,7 +355,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
         else
             ansLEN = 32;
         // 这里赋值 TPI 默认 TPI 为 4
-        int ansTPI = 32;
+        int ansTPI = 4;
 
         string calcExpr = expr->StringForXmpDynamicCode( aggFunctions, ariesParams, constValues, ariesComparators, ansLEN, ansTPI );
         LOG(INFO) << "calcExpr->" << calcExpr << endl;  //这里是生成的表达式动态代码

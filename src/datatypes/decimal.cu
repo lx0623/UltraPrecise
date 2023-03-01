@@ -1819,20 +1819,40 @@ __device__ __managed__  uint32_t __POW10_ARRAY[][NUM_TOTAL_DIG]={
 
         uint32_t inner_res[NUM_TOTAL_DIG*2]={0};
 
-        uint64_t temp;
-        uint32_t carry;
+        // uint64_t temp;
+        // uint32_t carry;
 
+        // #pragma unroll
+        // for(int i = 0; i < NUM_TOTAL_DIG; i++){
+        //     carry = 0;
+        //     #pragma unroll
+        //     for(int j = 0; j < NUM_TOTAL_DIG; j++){
+        //         // temp 表示范围最大值 2^64-1 右侧表达式 表示范围最大值 (2^32-1) * (2^32-1) + (2^32-1) + (2^32-1) = 2^64-1
+        //         temp = (uint64_t)v[i] * d.v[j] + inner_res[i+j] + carry;
+        //         carry = temp / PER_DEC_MAX_SCALE;
+        //         inner_res[i+j] = temp % PER_DEC_MAX_SCALE;
+        //     }
+        //     inner_res[i+NUM_TOTAL_DIG] = carry;
+        // }
+
+        uint32_t carry=0;
+        uint32_t inner_carry=0;
         #pragma unroll
-        for(int i = 0; i < NUM_TOTAL_DIG; i++){
+        for (int i = 0; i < DEC_LEN; i++)
+        {
             carry = 0;
             #pragma unroll
-            for(int j = 0; j < NUM_TOTAL_DIG; j++){
-                // temp 表示范围最大值 2^64-1 右侧表达式 表示范围最大值 (2^32-1) * (2^32-1) + (2^32-1) + (2^32-1) = 2^64-1
-                temp = (uint64_t)v[i] * d.v[j] + inner_res[i+j] + carry;
-                carry = temp / PER_DEC_MAX_SCALE;
-                inner_res[i+j] = temp % PER_DEC_MAX_SCALE;
+            for (int j = 0; j < DEC_LEN; j++)
+            {
+                inner_carry = 0;
+                asm  volatile ("mad.lo.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j]));
+                asm  volatile ("madc.hi.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j+1]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j+1]));
+                asm  volatile ("addc.u32 %0, %1, %2;" : "=r"(inner_carry) : "r"(0), "r"(0));
+                asm  volatile ("addc.cc.u32 %0, %1, %2;" : "=r"(inner_res[i+j+1]) : "r"(inner_res[i+j+1]), "r"(carry));
+                asm  volatile ("addc.u32 %0, %1, %2;" : "=r"(carry) : "r"(0), "r"(0));
+                carry = carry + inner_carry;
             }
-            inner_res[i+NUM_TOTAL_DIG] = carry;
+            inner_res[i + DEC_LEN] = carry;
         }
 
         #pragma unroll
