@@ -89,6 +89,8 @@ __device__ __managed__  uint32_t __POW10_ARRAY[][NUM_TOTAL_DIG]={
     // {0x00000000,0x7f410000,0x9670b12b,0x0e4395d6,0xaf298d05}
 };
 
+__device__ __managed__ uint32_t __PREC_BYTE_ARRAY[] = {0,1,1,2,2,3,3,4,4,4,5,5,6,6,6,7,7,8,8,9,9,9,10,10,11,11,11,12,12,13,13,14,14,14,15,15,16,16,16,17,17,18,18,19,19,19,20,20,21,21,21,22,22,23,23,24,24,24,25,25,26,26,26,27,27,28,28,29,29,29,30,30,31,31,31,32,32,33,33,34,34,34,35,35,36,36,36,37,37,38,38,38,39,39,40,40,41,41,41,42,42,43,43,43,44,44,45,45,46,46,46,47,47,48,48,48,49,49,50,50,51,51,51,52,52,53,53,53,54,54,55,55,56,56,56,57,57,58,58,58,59,59,60,60,61,61,61,62,62,63,63,63,64,64,65,65,66,66,66,67,67,68,68,68,69,69,70,70,71,71,71,72,72,73,73,73,74,74,75,75,76,76,76,77,77,78,78,78,79,79,80,80,81,81,81,82,82,83,83,83,84,84,85,85,86,86,86,87,87,88,88,88,89,89,90,90,91,91,91,92,92,93,93,93,94,94,95,95,96,96,96,97,97,98,98,98,99,99,100,100,101,101,101,102,102,103,103,103,104,104,105,105,105,106,106,107,107,108,108,108,109,109,110,110,110,111,111,112,112,113,113,113,114,114,115,115,115,116,116,117,117,118,118,118,119,119,120,120,120,121,121,122,122,123,123,123,124,124,125,125};
+
 #define FIX_INTG_FRAC_ERROR(len, intg1, frac1, error)       \
     do                                                      \
     {                                                       \
@@ -416,7 +418,7 @@ __device__ __managed__  uint32_t __POW10_ARRAY[][NUM_TOTAL_DIG]={
         }
         // 声明位数小于实际位数
         if( prec<prec0){
-            error = ERR_OVER_FLOW;
+            // error = ERR_OVER_FLOW;
         }
 	}
 
@@ -460,36 +462,7 @@ __device__ __managed__  uint32_t __POW10_ARRAY[][NUM_TOTAL_DIG]={
 
     //获取 Decimal To CompactDecimal 需要的 Byte
     ARIES_HOST_DEVICE_NO_INLINE int GetDecimalRealBytes(uint16_t precision, uint16_t scale) {
-        int needBytes = precision / DIG_PER_INT32 * 4;
-         switch (precision % DIG_PER_INT32) {
-            case 0:
-                needBytes += 0;
-                break;
-            case 1:
-                needBytes += 1;   //4个bit < 1 个字节
-                break;
-            case 2:
-                needBytes += 1;  //7个bit < 1 个字节
-                break;
-            case 3:
-                needBytes += 2;  //10个bit < 2 个字节
-                break;
-            case 4:
-                needBytes += 2;   //14个bit < 2 个字节
-                break;
-            case 5:
-                needBytes += 3;    //17个bit <  3个字节
-                break;
-            case 6:
-                needBytes += 3;    //20个bit < 3 个字节
-                break;
-            case 7:
-                needBytes += 4;    //24个bit < 4 个字节
-                break;
-            case 8:
-                needBytes += 4;    //27个bit < 4 个字节
-                break;
-        }
+        int needBytes = __PREC_BYTE_ARRAY[precision];
         return needBytes;
     }
 
@@ -1838,11 +1811,11 @@ __device__ __managed__  uint32_t __POW10_ARRAY[][NUM_TOTAL_DIG]={
         uint32_t carry=0;
         uint32_t inner_carry=0;
         #pragma unroll
-        for (int i = 0; i < DEC_LEN; i++)
+        for (int i = 0; i < NUM_TOTAL_DIG; i++)
         {
             carry = 0;
             #pragma unroll
-            for (int j = 0; j < DEC_LEN; j++)
+            for (int j = 0; j < NUM_TOTAL_DIG; j++)
             {
                 inner_carry = 0;
                 asm  volatile ("mad.lo.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j]));
@@ -1852,7 +1825,7 @@ __device__ __managed__  uint32_t __POW10_ARRAY[][NUM_TOTAL_DIG]={
                 asm  volatile ("addc.u32 %0, %1, %2;" : "=r"(carry) : "r"(0), "r"(0));
                 carry = carry + inner_carry;
             }
-            inner_res[i + DEC_LEN] = carry;
+            inner_res[i + NUM_TOTAL_DIG] = carry;
         }
 
         #pragma unroll
@@ -2022,9 +1995,8 @@ __device__ __managed__  uint32_t __POW10_ARRAY[][NUM_TOTAL_DIG]={
 
     //除法目标精度
     ARIES_HOST_DEVICE_NO_INLINE void Decimal::CalcDivTargetPrecision( const Decimal &d ) {
-        prec = (prec-frac) + d.frac;
+        prec = prec - d.prec + d.frac + DIV_FIX_EX_FRAC + 1;
         frac = frac + DIV_FIX_EX_FRAC;
-        prec += frac;
     }
 
     //右移 n个 10 进制位 zzh
@@ -2034,7 +2006,7 @@ __device__ __managed__  uint32_t __POW10_ARRAY[][NUM_TOTAL_DIG]={
         uint32_t remainder = 0;
         while ( n>DIG_PER_INT32){
             for (int i = INDEX_LAST_DIG; i>=0 ; i--){
-                temp = remainder * PER_DEC_MAX_SCALE + v[i];
+                temp = (uint64_t)remainder * PER_DEC_MAX_SCALE + v[i];
                 v[i] = temp / MAX_BASE10_PER_INT;
                 remainder = temp % MAX_BASE10_PER_INT;
             }

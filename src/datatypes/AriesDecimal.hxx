@@ -350,10 +350,12 @@ public:
                 inner_carry = 0;
                 asm  volatile ("mad.lo.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j]));
                 asm  volatile ("madc.hi.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j+1]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j+1]));
-                asm  volatile ("addc.u32 %0, %1, %2;" : "=r"(inner_carry) : "r"(0), "r"(0));
-                asm  volatile ("addc.cc.u32 %0, %1, %2;" : "=r"(inner_res[i+j+1]) : "r"(inner_res[i+j+1]), "r"(carry));
-                asm  volatile ("addc.u32 %0, %1, %2;" : "=r"(carry) : "r"(0), "r"(0));
-                carry = carry + inner_carry;
+                // 将 CC.CF 的值提取出来并置为零
+                asm  volatile ("addc.cc.u32 %0, %1, %2;" : "=r"(inner_carry) : "r"(0), "r"(0));
+                // inner_res 加 carry 并将进位写入 CC.CF
+                asm  volatile ("add.cc.u32 %0, %1, %2;" : "=r"(inner_res[i+j+1]) : "r"(inner_res[i+j+1]), "r"(carry));
+                // 将 CC.CF 的值提取到 carry 上 并加上 inner_carry 同时令 CC.CF 为 0
+                asm  volatile ("addc.cc.u32 %0, %1, %2;" : "=r"(carry) : "r"(0), "r"(inner_carry));
             }
             inner_res[i + DEC_LEN] = carry;
         }
@@ -620,6 +622,12 @@ public:
         dsHitBit++;
         // 被除数的最高位 是 dsHitBit
         dsHitBit += dsz * PER_INT_MAX_BIT;
+
+        if(dsHitBit < dtHitBit){
+            residuel = ds;
+            AriesDecimal res(0);
+            return res;
+        }
 
         // 被除数 最高位的 bit 所在位置是 dsHitBit 所以被除数表示的范围是 [ 2^(dsHitBit-1) , 2^dsHitBit )
         // 除数的 最高位的 bit 所在位置是 dtHitBit 所以除数表示的范围是 [ 2^(dtHitBit-1) , 2^dtHitBit )

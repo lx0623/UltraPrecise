@@ -318,7 +318,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
         constValues.clear();
         ariesComparators.clear();
         int seq = 0;
-        set< AriesDynamicCodeParam > tmpParams;
+        vector< AriesDynamicCodeParam > tmpParams;
         set< int > interVar;    // 避免重复的中间变量被多次定义
         string result = "";
         stringForXmpDynamicCodeInternal( aggFunctions, seq, tmpParams, constValues, interVar, ariesComparators, ansLEN, ansTPI, result);
@@ -670,7 +670,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
     }
 
     // 获取 该节点 生成的 string 代码
-    std::string AriesCommonExpr::contentToXmpString( set< AriesDynamicCodeParam >& ariesParams,
+    std::string AriesCommonExpr::contentToXmpString( vector< AriesDynamicCodeParam >& ariesParams,
                                                   vector< AriesDataBufferSPtr >& constValues,
                                                   int ansLIMBS,
                                                   bool printConstAsLiteral ) const
@@ -705,7 +705,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                     }
                 }
                 if(inAriesParams == false){
-                    ariesParams.insert( AriesDynamicCodeParam { boost::get< int >( content ), str_val, value_type, useDictIndex } );
+                    ariesParams.push_back( AriesDynamicCodeParam { boost::get< int >( content ), str_val, value_type, useDictIndex } );
                     if( value_type.DataType.ValueType ==  AriesValueType::COMPACT_DECIMAL && inAriesParams == false){
                         // 如果类型为 compact_decimal 则需要展开成 decimal
                         int len_var = aries_acc::GetDecimalRealBytes(value_type.DataType.Precision, value_type.DataType.Scale);
@@ -2126,7 +2126,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
     // 根据 树节点 生成整个树的 string 代码
     std::string AriesCommonExpr::stringForXmpDynamicCodeInternal( std::map< string, AriesCommonExprUPtr > &aggFunctions,
                                                                int &seq,
-                                                               set< AriesDynamicCodeParam >& ariesParams,
+                                                               vector< AriesDynamicCodeParam >& ariesParams,
                                                                vector< AriesDataBufferSPtr >& constValues,
                                                                set< int >& interVar,
                                                                vector< AriesDynamicCodeComparator >& ariesComparators,

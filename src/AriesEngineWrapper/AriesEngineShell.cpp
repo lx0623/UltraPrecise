@@ -13,6 +13,8 @@
 
 BEGIN_ARIES_ENGINE_NAMESPACE
 
+    static uint32_t __PREC_WORD_ARRAY[] = {0,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,13,13,13,13,13,13,13,13,13,14,14,14,14,14,14,14,14,14,14,15,15,15,15,15,15,15,15,15,16,16,16,16,16,16,16,16,16,16,17,17,17,17,17,17,17,17,17,17,18,18,18,18,18,18,18,18,18,19,19,19,19,19,19,19,19,19,19,20,20,20,20,20,20,20,20,20,21,21,21,21,21,21,21,21,21,21,22,22,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23,23,24,24,24,24,24,24,24,24,24,24,25,25,25,25,25,25,25,25,25,26,26,26,26,26,26,26,26,26,26,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,29,30,30,30,30,30,30,30,30,30,30,31,31,31,31,31,31,31,31,31,32,32};
+
     // 二叉树结构
     struct BinaryTree{
         AriesExprType type;
@@ -110,21 +112,21 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                 temp->value_type.DataType.Precision = max(tempChildren[0]->value_type.DataType.Precision - tempChildren[0]->value_type.DataType.Scale, tempChildren[1]->value_type.DataType.Precision - tempChildren[1]->value_type.DataType.Scale)+1;
                 temp->value_type.DataType.Scale = max(tempChildren[0]->value_type.DataType.Scale, tempChildren[1]->value_type.DataType.Scale);
                 temp->value_type.DataType.Precision += temp->value_type.DataType.Scale;
-                temp->value_type.DataType.AdaptiveLen = ( temp->value_type.DataType.Precision + DIG_PER_INT32 - 1) / DIG_PER_INT32;
+                temp->value_type.DataType.AdaptiveLen = __PREC_WORD_ARRAY[temp->value_type.DataType.Precision];
             }
             if( op == AriesCalculatorOpType::MUL){
                 temp = new BinaryTree(AriesCalculatorOpType::MUL);
                 temp->value_type.DataType.Precision = (tempChildren[0]->value_type.DataType.Precision - tempChildren[0]->value_type.DataType.Scale) + (tempChildren[1]->value_type.DataType.Precision - tempChildren[1]->value_type.DataType.Scale);
                 temp->value_type.DataType.Scale = tempChildren[0]->value_type.DataType.Scale + tempChildren[1]->value_type.DataType.Scale;
                 temp->value_type.DataType.Precision += temp->value_type.DataType.Scale;
-                temp->value_type.DataType.AdaptiveLen = ( temp->value_type.DataType.Precision + DIG_PER_INT32 - 1) / DIG_PER_INT32;
+                temp->value_type.DataType.AdaptiveLen = __PREC_WORD_ARRAY[temp->value_type.DataType.Precision];
             }
             if( op == AriesCalculatorOpType::DIV){
                 temp = new BinaryTree(AriesCalculatorOpType::DIV);
-                temp->value_type.DataType.Precision = (tempChildren[0]->value_type.DataType.Precision - tempChildren[0]->value_type.DataType.Scale) + tempChildren[1]->value_type.DataType.Scale;
+                uint32_t tmpAdaptiveLen = max(__PREC_WORD_ARRAY[tempChildren[0]->value_type.DataType.Precision + DIV_FIX_EX_FRAC], __PREC_WORD_ARRAY[tempChildren[1]->value_type.DataType.Precision]);
+                temp->value_type.DataType.Precision = tempChildren[0]->value_type.DataType.Precision - tempChildren[1]->value_type.DataType.Precision + tempChildren[1]->value_type.DataType.Scale  + DIV_FIX_EX_FRAC + 1;
                 temp->value_type.DataType.Scale = tempChildren[0]->value_type.DataType.Scale + DIV_FIX_EX_FRAC;
-                temp->value_type.DataType.Precision += temp->value_type.DataType.Scale;
-                temp->value_type.DataType.AdaptiveLen = ( temp->value_type.DataType.Precision + DIG_PER_INT32 - 1) / DIG_PER_INT32;
+                temp->value_type.DataType.AdaptiveLen = max(__PREC_WORD_ARRAY[temp->value_type.DataType.Precision], tmpAdaptiveLen);
             }
             if( op == AriesCalculatorOpType::MOD){
                 temp = new BinaryTree(AriesCalculatorOpType::MOD);
@@ -144,7 +146,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
         for (size_t i = 0; i < multipleTree->childList.size(); i++){
             if( multipleTree->childList[i]->type != AriesExprType::CALC){
                 BinaryTree * tempBinaryTree =  new BinaryTree( multipleTree->childList[i]->type, multipleTree->childList[i]->useDictIndex, multipleTree->childList[i]->content, multipleTree->childList[i]->value_type, multipleTree->childList[i]->reverse, varIndex++);
-                tempBinaryTree->value_type.DataType.AdaptiveLen = ( tempBinaryTree->value_type.DataType.Precision + DIG_PER_INT32 - 1) / DIG_PER_INT32;
+                tempBinaryTree->value_type.DataType.AdaptiveLen = __PREC_WORD_ARRAY[tempBinaryTree->value_type.DataType.Precision];
                 temp.push_back(tempBinaryTree);
             }
             else{

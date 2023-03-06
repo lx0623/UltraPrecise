@@ -111,7 +111,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                                                   int ansDecLength = 0);
         std::string stringForXmpDynamicCodeInternal( std::map< string, AriesCommonExprUPtr > &aggFunctions,
                                                   int &seq,
-                                                  set< AriesDynamicCodeParam >& ariesParams,
+                                                  vector< AriesDynamicCodeParam >& ariesParams,
                                                   vector< AriesDataBufferSPtr >& constValues,
                                                   set< int >& interVar,
                                                   vector< AriesDynamicCodeComparator >& ariesComparators,
@@ -131,7 +131,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                                      bool printConstAsLiteral = false,
                                      int ansDecLength = 0 ) const;
 
-        std::string contentToXmpString( set< AriesDynamicCodeParam >& ariesParams,
+        std::string contentToXmpString( vector< AriesDynamicCodeParam >& ariesParams,
                                      vector< AriesDataBufferSPtr >& constValues,
                                      int ansLIMBS,
                                      bool printConstAsLiteral = false ) const;

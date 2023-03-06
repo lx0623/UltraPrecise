@@ -1,0 +1,1 @@
+We have expanded the lineitem table of TPC-H. If you want to generate data by script, you need to add an original lineitem table first.
