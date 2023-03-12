@@ -13,8 +13,13 @@ int main (int argc, char *argv[])
     mpfr_t a;
     mpfr_inits2 (p, a, (mpfr_ptr) 0);
 
-    // two or thr
+#ifdef one
     string inPath = "./one/";
+#elif two
+    string inPath = "./two/";
+#elif thr
+    string inPath = "./thr/";
+#endif
     string filename( inPath+"data.tbl");
     fstream file_in;
     file_in.open(filename, ios_base::in);

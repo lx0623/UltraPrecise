@@ -612,6 +612,12 @@ public:
             aries_memset(residuel.v, 0x00, sizeof(residuel.v));
             return ds;
         }
+        //被除数小于除数
+        if(ds < dt){
+            residuel = ds;
+            AriesDecimal res(0);
+            return res;
+        }
         //通过二进制的方法得出数据上下限
         uint32_t dsz = DEC_LEN-1;
         while(ds.v[dsz]==0)    
@@ -622,12 +628,6 @@ public:
         dsHitBit++;
         // 被除数的最高位 是 dsHitBit
         dsHitBit += dsz * PER_INT_MAX_BIT;
-
-        if(dsHitBit < dtHitBit){
-            residuel = ds;
-            AriesDecimal res(0);
-            return res;
-        }
 
         // 被除数 最高位的 bit 所在位置是 dsHitBit 所以被除数表示的范围是 [ 2^(dsHitBit-1) , 2^dsHitBit )
         // 除数的 最高位的 bit 所在位置是 dtHitBit 所以除数表示的范围是 [ 2^(dtHitBit-1) , 2^dtHitBit )
