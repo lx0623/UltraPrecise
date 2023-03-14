@@ -39,7 +39,8 @@ The log files are stored in build/data/log
 ### Install Heavy.AI
 
 - Get source code  
-  ``git clone git@github.com:heavyai/heavydb.git``
+  ``git clone git@github.com:heavyai/heavydb.git``   
+  Commit: a987f07e93033a19b3794f7c58ec192e6aed7012
 
 - Install prebuilt dependencies.  
   ```cd heavydb```  
@@ -75,6 +76,7 @@ The log files are stored in build/data/log
 
 - Get source code  
   ```hg clone http://dev.monetdb.org/hg/MonetDB/```  
+  hg id: 10f163163396
 
 - Compile System  
   ```cd MonetDB```  
@@ -125,6 +127,7 @@ The log files are stored in build/data/log
 
 - Get source code  
   ```git clone https://github.com/cockroachdb/cockroach```  
+  Commit f886e7cb20be5229de6e633c11c1c91436132dd8
 
 - Install Bazelisk  
   ```https://github.com/bazelbuild/bazelisk/releases/download/v1.16.0/  bazelisk-linux-amd64```  
