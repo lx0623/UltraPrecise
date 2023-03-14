@@ -70,7 +70,7 @@ The log files are stored in build/data/log
 ### Install RateupDB  
 
 - Consistent with Fast-APA  
-```git clone https://github.com/lx0623/DB```   
+```git clone git@github.com:lx0623/DB.git```   
 ### Install MonetDB
 
 - Get source code  
