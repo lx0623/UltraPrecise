@@ -1,6 +1,6 @@
 # Opt_expression
 
-In this experiment, we use the single-threaded operation of Fast-APA. "YourPath" represents the location where the data you generated is stored.
+In this experiment, we use the single-threaded operation of UltraPrecise. "YourPath" represents the location where the data you generated is stored.
 
 We compare the system by utilizing the optimization policy with the system that does not utilize the optimization policy. If you want to cancel the corresponding optimization policy, you can comment on the corresponding code in `AriesEngineShell.cpp`.
 

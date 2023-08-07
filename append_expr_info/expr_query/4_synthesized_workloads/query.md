@@ -26,8 +26,7 @@ create table lineitem ( l_orderkey    integer not null,
                         l_receiptdate date not null,
                         l_shipinstruct char(25) not null encoding bytedict as l_shipinstruct,
                         l_shipmode     char(10) not null encoding bytedict as l_shipmode,
-                        l_comment      varchar(44) not null,
-                        primary key ( l_orderkey, l_linenumber ) );
+                        l_comment      varchar(44) not null);
 load data infile 'YourPath/tpch/scale_10/lineitem.tbl' into table lineitem fields terminated by '|';
 
 create table lineitem_2 ( l_orderkey    integer not null,
@@ -45,8 +44,7 @@ create table lineitem_2 ( l_orderkey    integer not null,
                         l_receiptdate date not null,
                         l_shipinstruct char(25) not null encoding bytedict as l_shipinstruct,
                         l_shipmode     char(10) not null encoding bytedict as l_shipmode,
-                        l_comment      varchar(44) not null,
-                        primary key ( l_orderkey, l_linenumber ) );
+                        l_comment      varchar(44) not null);
 load data infile 'YourPath/tpch/scale_10/lineitem.tbl' into table lineitem_2 fields terminated by '|';
 
 create table lineitem_t0_LEN_2 ( l_orderkey    integer not null,
@@ -64,8 +62,7 @@ create table lineitem_t0_LEN_2 ( l_orderkey    integer not null,
                         l_receiptdate date not null,
                         l_shipinstruct char(25) not null encoding bytedict as l_shipinstruct,
                         l_shipmode     char(10) not null encoding bytedict as l_shipmode,
-                        l_comment      varchar(44) not null,
-                        primary key ( l_orderkey, l_linenumber ) );
+                        l_comment      varchar(44) not null);
 load data infile 'YourPath/Query_7_tpch_revision/scale_10/LEN_2/lineitem.tbl' into table lineitem_t0_LEN_2 fields terminated by '|';
 
 create table lineitem_t1_LEN_4 ( l_orderkey    integer not null,
@@ -83,8 +80,7 @@ create table lineitem_t1_LEN_4 ( l_orderkey    integer not null,
                         l_receiptdate date not null,
                         l_shipinstruct char(25) not null encoding bytedict as l_shipinstruct,
                         l_shipmode     char(10) not null encoding bytedict as l_shipmode,
-                        l_comment      varchar(44) not null,
-                        primary key ( l_orderkey, l_linenumber ) );
+                        l_comment      varchar(44) not null);
 load data infile 'YourPath/Query_7_tpch_revision/scale_10/LEN_4/lineitem.tbl' into table lineitem_t1_LEN_4 fields terminated by '|';
 
 create table lineitem_t2_LEN_8 ( l_orderkey    integer not null,
@@ -102,8 +98,7 @@ create table lineitem_t2_LEN_8 ( l_orderkey    integer not null,
                         l_receiptdate date not null,
                         l_shipinstruct char(25) not null encoding bytedict as l_shipinstruct,
                         l_shipmode     char(10) not null encoding bytedict as l_shipmode,
-                        l_comment      varchar(44) not null,
-                        primary key ( l_orderkey, l_linenumber ) );
+                        l_comment      varchar(44) not null);
 load data infile 'YourPath/Query_7_tpch_revision/scale_10/LEN_8/lineitem.tbl' into table lineitem_t2_LEN_8 fields terminated by '|';
 
 create table lineitem_t3_LEN_16 ( l_orderkey    integer not null,
@@ -121,8 +116,7 @@ create table lineitem_t3_LEN_16 ( l_orderkey    integer not null,
                         l_receiptdate date not null,
                         l_shipinstruct char(25) not null encoding bytedict as l_shipinstruct,
                         l_shipmode     char(10) not null encoding bytedict as l_shipmode,
-                        l_comment      varchar(44) not null,
-                        primary key ( l_orderkey, l_linenumber ) );
+                        l_comment      varchar(44) not null);
 load data infile 'YourPath/Query_7_tpch_revision/scale_10/LEN_16/lineitem.tbl' into table lineitem_t3_LEN_16 fields terminated by '|';
 
 create table lineitem_t4_LEN_32 ( l_orderkey    integer not null,
@@ -140,8 +134,7 @@ create table lineitem_t4_LEN_32 ( l_orderkey    integer not null,
                         l_receiptdate date not null,
                         l_shipinstruct char(25) not null encoding bytedict as l_shipinstruct,
                         l_shipmode     char(10) not null encoding bytedict as l_shipmode,
-                        l_comment      varchar(44) not null,
-                        primary key ( l_orderkey, l_linenumber ) );
+                        l_comment      varchar(44) not null);
 load data infile 'YourPath/Query_7_tpch_revision/scale_10/LEN_32/lineitem.tbl' into table lineitem_t4_LEN_32 fields terminated by '|';
 ```
 

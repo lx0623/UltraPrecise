@@ -118,7 +118,7 @@ from sig_div_t1_LEN_4;
 
 # aggregation
 
-The aggregation of Decimal type in Fast-APA is done by multi-threaded calculation, and the size of `TPI` (thread per instance) can be modified by modifying the code in `decimal.h` in line 61.
+The aggregation of Decimal type in UltraPrecise is done by multi-threaded calculation, and the size of `TPI` (thread per instance) can be modified by modifying the code in `decimal.h` in line 61.
 
 ## Create table
 

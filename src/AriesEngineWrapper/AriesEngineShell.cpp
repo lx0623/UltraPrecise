@@ -134,6 +134,9 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                 temp->value_type.DataType.Scale = 0;
                 temp->value_type.DataType.AdaptiveLen = max(tempChildren[0]->value_type.DataType.AdaptiveLen, tempChildren[1]->value_type.DataType.AdaptiveLen);
             }
+            if(temp->value_type.DataType.AdaptiveLen > NUM_TOTAL_DIG){
+                temp->value_type.DataType.AdaptiveLen = NUM_TOTAL_DIG;
+            }
             temp->varIndexInKernel = curIndex;
             temp->children = tempChildren;
             return temp;

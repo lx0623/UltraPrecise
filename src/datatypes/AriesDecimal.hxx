@@ -320,26 +320,9 @@ public:
 
         uint32_t inner_res[DEC_LEN * 2] = {0};
 
-        // uint64_t temp;
-        // uint32_t carry;
+        uint64_t temp;
+        uint32_t carry;
 
-        // #pragma unroll
-        // for (int i = 0; i < DEC_LEN; i++)
-        // {
-        //     carry = 0;
-        //     #pragma unroll
-        //     for (int j = 0; j < DEC_LEN; j++)
-        //     {
-        //         // temp 表示范围最大值 2^64-1 右侧表达式 表示范围最大值 (2^32-1) * (2^32-1) + (2^32-1) + (2^32-1) = 2^64-1
-        //         temp = (uint64_t)v[i] * d.v[j] + inner_res[i + j] + carry;
-        //         carry = temp / PER_DEC_MAX_SCALE;
-        //         inner_res[i + j] = temp % PER_DEC_MAX_SCALE;
-        //     }
-        //     inner_res[i + DEC_LEN] = carry;
-        // }
-
-        uint32_t carry=0;
-        uint32_t inner_carry=0;
         #pragma unroll
         for (int i = 0; i < DEC_LEN; i++)
         {
@@ -347,18 +330,35 @@ public:
             #pragma unroll
             for (int j = 0; j < DEC_LEN; j++)
             {
-                inner_carry = 0;
-                asm  volatile ("mad.lo.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j]));
-                asm  volatile ("madc.hi.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j+1]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j+1]));
-                // 将 CC.CF 的值提取出来并置为零
-                asm  volatile ("addc.cc.u32 %0, %1, %2;" : "=r"(inner_carry) : "r"(0), "r"(0));
-                // inner_res 加 carry 并将进位写入 CC.CF
-                asm  volatile ("add.cc.u32 %0, %1, %2;" : "=r"(inner_res[i+j+1]) : "r"(inner_res[i+j+1]), "r"(carry));
-                // 将 CC.CF 的值提取到 carry 上 并加上 inner_carry 同时令 CC.CF 为 0
-                asm  volatile ("addc.cc.u32 %0, %1, %2;" : "=r"(carry) : "r"(0), "r"(inner_carry));
+                // temp 表示范围最大值 2^64-1 右侧表达式 表示范围最大值 (2^32-1) * (2^32-1) + (2^32-1) + (2^32-1) = 2^64-1
+                temp = (uint64_t)v[i] * d.v[j] + inner_res[i + j] + carry;
+                carry = temp / PER_DEC_MAX_SCALE;
+                inner_res[i + j] = temp % PER_DEC_MAX_SCALE;
             }
             inner_res[i + DEC_LEN] = carry;
         }
+
+        // uint32_t carry=0;
+        // uint32_t inner_carry=0;
+        // #pragma unroll
+        // for (int i = 0; i < DEC_LEN; i++)
+        // {
+        //     carry = 0;
+        //     #pragma unroll
+        //     for (int j = 0; j < DEC_LEN; j++)
+        //     {
+        //         inner_carry = 0;
+        //         asm  volatile ("mad.lo.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j]));
+        //         asm  volatile ("madc.hi.cc.u32 %0, %1, %2, %3;" : "=r"(inner_res[i+j+1]) : "r"(v[i]), "r"(d.v[j]), "r"(inner_res[i+j+1]));
+        //         // 将 CC.CF 的值提取出来并置为零
+        //         asm  volatile ("addc.cc.u32 %0, %1, %2;" : "=r"(inner_carry) : "r"(0), "r"(0));
+        //         // inner_res 加 carry 并将进位写入 CC.CF
+        //         asm  volatile ("add.cc.u32 %0, %1, %2;" : "=r"(inner_res[i+j+1]) : "r"(inner_res[i+j+1]), "r"(carry));
+        //         // 将 CC.CF 的值提取到 carry 上 并加上 inner_carry 同时令 CC.CF 为 0
+        //         asm  volatile ("addc.cc.u32 %0, %1, %2;" : "=r"(carry) : "r"(0), "r"(inner_carry));
+        //     }
+        //     inner_res[i + DEC_LEN] = carry;
+        // }
 
         // uint32_t tmp_carry = 0;
         // uint32_t grp_carry = 0;

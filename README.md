@@ -1,12 +1,12 @@
-# Fast-APA
+# UltraPrecise
 
-Fast-APA: An Arbitrary-Precision Arithmetic Framework for Databases on GPU
+UltraPrecise: An Arbitrary-Precision Arithmetic Framework for Databases on GPU
 
 ## How to install
 
 /home/dbuser
 
-├─Fast-APA  
+├─UltraPrecise  
 ├─heavydb  
 ├─RateupDB   
 ├─MonetDB  
@@ -14,21 +14,21 @@ Fast-APA: An Arbitrary-Precision Arithmetic Framework for Databases on GPU
 ├─cockroach  
 └─h2  
 
-### Install Fast-APA
+### Install UltraPrecise
 
 - Make related dir  
-  ```cd Fast-APA```  
+  ```cd UltraPrecise```  
   ```mkdir build```   
 - Compile system  
-  ```cd Fast-APA```  
+  ```cd UltraPrecise```  
   ```cd build```  
   ```make -j```
 - Init system schema  
-  ```cd Fast-APA```  
+  ```cd UltraPrecise```  
   ```cd build```  
   ```./rateup --initialize --datadir=data```  
 - Run server  
-  ```cd Fast-APA```  
+  ```cd UltraPrecise```  
   ```cd build```  
   ```./rateup <--port=3306> <--datadir=data> ```  
 - Run mysql cli  
@@ -70,7 +70,7 @@ The log files are stored in build/data/log
 
 ### Install RateupDB  
 
-- Consistent with Fast-APA  
+- Consistent with UltraPrecise  
 ```git clone git@github.com:lx0623/DB.git```   
 ### Install MonetDB
 
@@ -193,7 +193,7 @@ Here is an example of generating Query 1 data:
 Generating a ```lineitem.tbl``` for TPC-H and its extensions is a special case. You need to put a ```lineitem.tbl``` under the ```4.synthesized_workload/TPC-H_Q1```.
 
 ## How to load data to the database
-### Fast-APA and RateupDB
+### UltraPrecise and RateupDB
 ```load data infile 'YourPath/xxx.tbl' into table tableName fields terminated by '|';``` 
 ### Heavy.AI
 Since heavy.AI will have restrictions about whitelisting, we use the ```./bin/heavydb --allowed-import-paths '["/"]' --allowed-export-path '["/"]'``` command to start the service.
@@ -217,13 +217,13 @@ The tbl to csv script ```tbl2csv.py``` is stored in the ```gen_data``` directory
 
 We use special statements in each database to eliminate the effect of print cost reduction on the experimental results (TPC-H Q1 experiments and aggregation experiments do not consider this case).
 
-Specifically, for Fast-APA, RateupDB, Heavy.AI, we count the time by checking the `logs`.
+Specifically, for UltraPrecise, RateupDB, Heavy.AI, we count the time by checking the `logs`.
 
 For MonetDB, we have added the ```TRACE``` statement before the Query command.
 
 For PostgreSQL, CockroachDB and H2, we use the ```Explain Analyze``` statement.
 
-Fast-APA and RateupDB logs are stored in ```build/data/log``` as ```rateup.xxx.xxx.log.INFO.xxx.xxx```.
+UltraPrecise and RateupDB logs are stored in ```build/data/log``` as ```rateup.xxx.xxx.log.INFO.xxx.xxx```.
 
 The execution time is profiled as a JSON data like ```{"plans": [{"compileKernel": xxx,"plan": [{xxxxxx}]}],"total": xxx}}```
 

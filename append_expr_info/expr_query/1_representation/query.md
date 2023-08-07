@@ -1,6 +1,6 @@
 # Dec_representation
 
-In this experiment, we use the single-threaded operation of Fast-APA. "YourPath" represents the location where the data you generated is stored.
+In this experiment, we use the single-threaded operation of UltraPrecise. "YourPath" represents the location where the data you generated is stored.
 
 ## Query1
 
