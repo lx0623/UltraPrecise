@@ -40,13 +40,13 @@ BEGIN_ARIES_ENGINE_NAMESPACE
             case AriesExprType::CALC:
             {
                 AriesColumnType value_type = expr->GetValueType();
-                // 集成的 xmp 算法仅适用于 Decimal 相关的计算
-                if(value_type.DataType.ValueType == aries::AriesValueType::COMPACT_DECIMAL){
-                    result = MakeCalcXmpNode( expr, nodeId);
-                }
-                else{
+                // // 集成的 xmp 算法仅适用于 Decimal 相关的计算
+                // if(value_type.DataType.ValueType == aries::AriesValueType::COMPACT_DECIMAL){
+                //     result = MakeCalcXmpNode( expr, nodeId);
+                // }
+                // else{
                     result = MakeCalcNode( expr, nodeId );
-                }
+                // }
                 break;
             }
             case AriesExprType::INTEGER:
@@ -237,7 +237,8 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                                         std::move( ariesParams ),
                                         std::move( constValues ),
                                         std::move( ariesComparators ),
-                                        calcExpr );
+                                        calcExpr,
+                                        expr->GetValueType());
     }
 
     unique_ptr< AEExprComparisonNode > AriesCalcTreeGenerator::MakeComparisonNode( const AriesCommonExprUPtr& expr ) const

@@ -403,6 +403,12 @@ public:
         return *this;
     }
 
+    friend ARIES_DEVICE AriesDecimal operator*(const AriesDecimal &left, int32_t right)
+    {
+        AriesDecimal tmp(right);
+        return tmp *= left;
+    }
+
     friend ARIES_DEVICE AriesDecimal operator*(const AriesDecimal &left, const AriesDecimal &right)
     {
         AriesDecimal tmp(left);
@@ -447,6 +453,66 @@ public:
                 break;
         }
         return res;
+    }
+
+    friend ARIES_DEVICE bool operator<(const AriesDecimal &left, int32_t right){
+        AriesDecimal tmp(right);
+        return left < tmp;
+    }
+
+    friend ARIES_DEVICE bool operator>(const AriesDecimal &left, int32_t right){
+        AriesDecimal tmp(right);
+        return left > tmp;
+    }
+
+    friend ARIES_DEVICE bool operator<=(const AriesDecimal &left, int32_t right){
+        AriesDecimal tmp(right);
+        return !(left > tmp);
+    }
+
+    friend ARIES_DEVICE bool operator>=(const AriesDecimal &left, int32_t right){
+        AriesDecimal tmp(right);
+        return !(left < tmp);
+    }
+
+    friend ARIES_DEVICE bool operator<( int32_t left, const AriesDecimal & right){
+        AriesDecimal tmp(left);
+        return left < tmp;
+    }
+
+    friend ARIES_DEVICE bool operator>( int32_t left, const AriesDecimal & right){
+        AriesDecimal tmp(left);
+        return left > tmp;
+    }
+
+    friend ARIES_DEVICE bool operator<=( int32_t left, const AriesDecimal & right){
+        AriesDecimal tmp(left);
+        return !(left > tmp);
+    }
+
+    friend ARIES_DEVICE bool operator>=( int32_t left, const AriesDecimal & right){
+        AriesDecimal tmp(left);
+        return !(left < tmp);
+    }
+
+    friend ARIES_DEVICE bool operator<( int8_t left, const AriesDecimal & right){
+        AriesDecimal tmp(left);
+        return left < tmp;
+    }
+
+    friend ARIES_DEVICE bool operator>( int8_t left, const AriesDecimal & right){
+        AriesDecimal tmp(left);
+        return left > tmp;
+    }
+
+    friend ARIES_DEVICE bool operator<=( int8_t left, const AriesDecimal & right){
+        AriesDecimal tmp(left);
+        return !(left > tmp);
+    }
+
+    friend ARIES_DEVICE bool operator>=( int8_t left, const AriesDecimal & right){
+        AriesDecimal tmp(left);
+        return !(left < tmp);
     }
 
     friend ARIES_DEVICE bool operator<(const AriesDecimal &left, const AriesDecimal &right) {
@@ -830,6 +896,16 @@ public:
         }
     }
 
+    ARIES_DEVICE AriesDecimal(int32_t t) {
+        // 默认精度
+        initialize(10, 0, 0);
+        v[0] = t;
+        if(t<0){
+            sign = 1;
+            v[0] = -v[0];
+        }
+    }
+
     ARIES_DEVICE AriesDecimal& ModByInt(const AriesDecimal &d){
         //存放除数
         uint32_t dvs = d.v[0];
@@ -944,6 +1020,54 @@ public:
         return tmp %= right;
     }
 
+    friend ARIES_DEVICE bool operator>(const AriesDecimal &left, const AriesDecimal &right) {
+        long long temp = 0;
+        if(left.sign != right.sign){
+            //符号不同
+            if(left.sign == 0){
+                return true;
+            }
+            return false;
+        }
+        else{
+            //符号相同
+            AriesDecimal l(left);
+            AriesDecimal r(right);
+            if( l.frac != r.frac){
+                l.AlignAddSubData(r);
+            }
+            if( left.sign == 0){
+                #pragma unroll
+                for (int i = DEC_LEN - 1; i >= 0; i--) {
+                    if( temp = (long long)l.v[i] - r.v[i] ){
+                        return temp > 0;
+                    }
+                }
+            }
+            else{
+                #pragma unroll
+                for (int i = DEC_LEN - 1; i >= 0; i--) {
+                    if( temp = (long long)l.v[i] - r.v[i] ){
+                        return temp < 0;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    friend ARIES_DEVICE bool operator<=(const AriesDecimal &left, const AriesDecimal &right) {
+        return !(left > right);
+    }
+
+    ARIES_DEVICE operator bool() const {
+        for (int i = 0; i < DEC_LEN; ++i) {
+           if (v[i] != 0) {
+               return true;
+           }
+       }
+       return false;
+    }
 };
 
 END_ARIES_ACC_NAMESPACE

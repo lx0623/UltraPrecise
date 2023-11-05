@@ -130,7 +130,8 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                                                      vector< AriesDynamicCodeParam > && params,
                                                      vector< AriesDataBufferSPtr > && constValues,
                                                      vector< AriesDynamicCodeComparator > && comparators,
-                                                     const string& expr );
+                                                     const string& expr,
+                                                     const AriesColumnType& valueType );
         virtual ~AEExprAndOrNode();
         virtual AEExprNodeResult Process( const AriesTableBlockUPtr& refTable ) const;
         AEExprNodeResult RunKernelFunction( const AriesTableBlockUPtr& refTable ) const;
@@ -145,12 +146,13 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                          vector< AriesDynamicCodeParam > && params,
                          vector< AriesDataBufferSPtr > && constValues,
                          vector< AriesDynamicCodeComparator > && comparators,
-                         const string& expr );
+                         const string& expr,
+                         const AriesColumnType& valueType );
         size_t GetResultItemSize() const { return sizeof( AriesBool ); }
     private:
         string GenerateTempVarCode( const AriesDynamicCodeComparator& comparator ) const;
-        pair< string, string > GenerateCudaFunctionEx( const vector< AriesDynamicCodeParam >& params, const string& expr ) const;
-        pair< string, string > GenerateLoadDataCodeEx( const AriesDynamicCodeParam& param, int index ) const;
+        pair< string, string > GenerateCudaFunctionEx( const vector< AriesDynamicCodeParam >& params, const string& expr, const AriesColumnType& valueType ) const;
+        pair< string, string > GenerateLoadDataCodeEx( const AriesDynamicCodeParam& param, int index, int len ) const;
         string GenerateSaveDataCode( const string& paramName ) const;
 
     private:
@@ -446,7 +448,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
         string GenerateTempVarCode( const AriesDynamicCodeComparator& comparator ) const;
         pair< string, string > GenerateCudaFunction( const vector< AriesDynamicCodeParam >& params, const string& expr,
                 const AriesColumnType& value ) const;
-        string GenerateLoadDataCode( const AriesDynamicCodeParam& param, int index ) const;
+        string GenerateLoadDataCode( const AriesDynamicCodeParam& param, int index, int len ) const;
         string GenerateSaveDataCode( const AriesColumnType& type, const string& paramName ) const;
 
     private:

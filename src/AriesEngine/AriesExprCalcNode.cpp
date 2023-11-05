@@ -588,7 +588,8 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                                                            vector< AriesDynamicCodeParam > && params,
                                                            vector< AriesDataBufferSPtr > && constValues,
                                                            vector< AriesDynamicCodeComparator > && comparators,
-                                                           const string& expr )
+                                                           const string& expr,
+                                                           const AriesColumnType& valueType )
     {
         return unique_ptr< AEExprAndOrNode >( new AEExprAndOrNode( nodeId,
                                                                    exprIndex,
@@ -596,7 +597,8 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                                                                    std::move( params ),
                                                                    std::move( constValues ),
                                                                    std::move( comparators ),
-                                                                   expr ) );
+                                                                   expr,
+                                                                   valueType ) );
     }
 
     AEExprAndOrNode::AEExprAndOrNode( int nodeId,
@@ -605,11 +607,12 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                                       vector< AriesDynamicCodeParam > && params,
                                       vector< AriesDataBufferSPtr > && constValues,
                                       vector< AriesDynamicCodeComparator > && comparators,
-                                      const string& expr )
+                                      const string& expr,
+                                      const AriesColumnType& valueType )
             : AEExprDynKernelNode( nodeId, exprIndex, std::move( params ), std::move( constValues ), std::move( comparators ), expr, AriesColumnType() ),
               m_opType( opType )
     {
-        pair< string, string > cudaFunction = GenerateCudaFunctionEx( m_ariesParams, m_expr );
+        pair< string, string > cudaFunction = GenerateCudaFunctionEx( m_ariesParams, m_expr, valueType );
         m_cudaFunctionName = cudaFunction.first;
         m_cudaFunction = cudaFunction.second;
     }
@@ -635,7 +638,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
         }
     }
 
-    pair< string, string > AEExprAndOrNode::GenerateLoadDataCodeEx( const AriesDynamicCodeParam& param, int index ) const
+    pair< string, string > AEExprAndOrNode::GenerateLoadDataCodeEx( const AriesDynamicCodeParam& param, int index, int len ) const
     {
         char buf[1024];
         AriesColumnType type = param.Type;
@@ -649,7 +652,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
             }
             else
             {
-                sprintf( buf, "( Decimal( (CompactDecimal*)( input[%d][i] ), %u, %u ) )", index, type.DataType.Precision, type.DataType.Scale );
+                sprintf( buf, "        AriesDecimal<%u> ( (CompactDecimal*)( input[%d][i] ), %u, %u )", len, index, type.DataType.Precision, type.DataType.Scale );
             }
         }
         else
@@ -661,7 +664,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
         {   param.ParamName, buf};
     }
 
-    pair< string, string > AEExprAndOrNode::GenerateCudaFunctionEx( const vector< AriesDynamicCodeParam >& params, const string& expr ) const
+    pair< string, string > AEExprAndOrNode::GenerateCudaFunctionEx( const vector< AriesDynamicCodeParam >& params, const string& expr, const AriesColumnType& resultDataType ) const
     {
         ARIES_ASSERT( !expr.empty() && !params.empty(),
                 "expr empty: " + to_string( expr.empty() ) + ", params empty: " + to_string( params.empty() ) );
@@ -684,7 +687,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
         vector< pair< string, string > > loadParamCodes;
         for( const auto& param : params )
         {
-            loadParamCodes.push_back( GenerateLoadDataCodeEx( param, index++ ) );
+            loadParamCodes.push_back( GenerateLoadDataCodeEx( param, index++, resultDataType.DataType.AdaptiveLen) );
         }
 
         code += "        AriesBool " + resultValName + " = " + expr + ";\n";
@@ -1400,7 +1403,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
     {
         char buf[1024];
         AriesColumnType type = param.Type;
-
+        type.DataType.AdaptiveLen = len;
         if( type.DataType.ValueType == AriesValueType::COMPACT_DECIMAL )
         {
             if( type.HasNull )
@@ -2692,7 +2695,7 @@ ERROR 1241 (21000): Operand should contain 1 column(s)
         int index = 0;
         for( const auto& param : params )
         {
-            code += GenerateLoadDataCode( param, index++ );
+            code += GenerateLoadDataCode( param, index++, resultDataType.DataType.AdaptiveLen );
         }
 
         code += "        " + GenerateParamType( resultDataType ) + " " + resultValName + " = " + expr + ";\n";
@@ -2703,7 +2706,7 @@ ERROR 1241 (21000): Operand should contain 1 column(s)
         {   name, code};
     }
 
-    string AEExprCaseNode::GenerateLoadDataCode( const AriesDynamicCodeParam& param, int index ) const
+    string AEExprCaseNode::GenerateLoadDataCode( const AriesDynamicCodeParam& param, int index, int len ) const
     {
         char buf[1024];
         AriesColumnType type = param.Type;
@@ -2718,8 +2721,7 @@ ERROR 1241 (21000): Operand should contain 1 column(s)
             }
             else
             {
-                sprintf( buf, "        Decimal %s( (CompactDecimal*)( input[%d][i] ), %u, %u );\n", param.ParamName.c_str(), index,
-                        type.DataType.Precision, type.DataType.Scale );
+                sprintf( buf, "        AriesDecimal<%u> %s( (CompactDecimal*)( input[%d][i] ), %u, %u );\n", len, param.ParamName.c_str(), index, type.DataType.Precision, type.DataType.Scale );
             }
         }
         else

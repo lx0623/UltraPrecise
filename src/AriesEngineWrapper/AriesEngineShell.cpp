@@ -169,7 +169,8 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                 tempNode->varIndexInKernel = curIndex;
             }
             else{
-                tempNode = new BinaryTree( multipleTree->type, multipleTree->useDictIndex, multipleTree->content, multipleTree->value_type, multipleTree->reverse, varIndex++);
+                // 对于 1 + 2 的数变为 + 3 时 这种最终根节点会变为 3
+                tempNode = new BinaryTree(temp[0]->type, temp[0]->useDictIndex, temp[0]->content, temp[0]->value_type, temp[0]->reverse, varIndex++);
                 tempNode->varIndexInKernel = curIndex;
             }
         }
@@ -227,14 +228,15 @@ BEGIN_ARIES_ENGINE_NAMESPACE
     }
 
     // 将 struct BinaryTree 的树克隆到 AriesCommonExprUPtr 上
-    AriesCommonExprUPtr CloneDataFromBinaryTree(struct BinaryTree* binTree)
+    AriesCommonExprUPtr CloneDataFromBinaryTree(struct BinaryTree* binTree, int ansDecimalLen)
     {
+        binTree->value_type.DataType.AdaptiveLen = ansDecimalLen;
         AriesCommonExprUPtr result = make_unique < AriesCommonExpr > ( binTree->type, binTree->content, binTree->value_type );
         result->SetUseDictIndex(binTree->useDictIndex);
         result->value_reverse = binTree->reverse;
         result->varIndexInKernel = binTree->varIndexInKernel;
         for( auto child : binTree->children )
-            result->AddChild( CloneDataFromBinaryTree(child) );
+            result->AddChild( CloneDataFromBinaryTree(child, ansDecimalLen) );
         return result;
     }
 
@@ -460,6 +462,7 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                             if(optInsertFlag == true){
                                 struct MultipleTree *newNode = new MultipleTree();
                                 newNode->type = AriesExprType::DECIMAL;
+                                newNode->value_type.DataType.Precision = nodeDecimal.frac;
                                 newNode->value_type.DataType.Scale = nodeDecimal.frac;
                                 newNode->content = nodeDecimal;
                                 newChildList.push_back( newNode );
@@ -649,6 +652,8 @@ BEGIN_ARIES_ENGINE_NAMESPACE
         struct BinaryTree *pStack = CloneDataFromExpr(expr);
         // 利用层序遍历找到所有计算节点的根节点 即以 CALC 为根节点的子树
         nodeQueue.push(pStack);
+        // 对于根节点非 CALC 的要记录一下计算过程中使用的最大 Decimal 的长度
+        int ansDecimalLen = 0;
         while(nodeQueue.empty() == false){
             // 当节点是 CALC 说明它是一棵计算树
             if ( nodeQueue.front()->type == AriesExprType::CALC && nodeQueue.front()->value_type.DataType.ValueType == AriesValueType::COMPACT_DECIMAL){
@@ -656,7 +661,10 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                 // 找到了 CALC 计算节点 那么我们直接把这个节点进行改造
                 AlignOptimizeNode(nodeQueue.front());
                 // 结果精度可能变了 这里要重新算一下 compactdecimal 的长度
-                nodeQueue.front()->value_type.DataType.Length = GetDecimalRealBytes( nodeQueue.front()->value_type.DataType.Precision, nodeQueue.front()->value_type.DataType.Scale);
+                int compactLen = GetDecimalRealBytes( nodeQueue.front()->value_type.DataType.Precision, nodeQueue.front()->value_type.DataType.Scale);
+                int calcLen = nodeQueue.front()->value_type.DataType.AdaptiveLen;
+                nodeQueue.front()->value_type.DataType.Length = compactLen;
+                nodeQueue.front()->value_type.DataType.AdaptiveLen = __PREC_WORD_ARRAY[compactLen]  > calcLen? __PREC_WORD_ARRAY[compactLen] : calcLen;
                 nodeQueue.front()->value_type.DataType.ValueType = tmp_value_type.DataType.ValueType;
                 nodeQueue.front()->value_type.HasNull = tmp_value_type.HasNull;
                 nodeQueue.front()->value_type.IsUnique = tmp_value_type.IsUnique;
@@ -667,10 +675,13 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                     nodeQueue.push(child);
                 }
             }
+            if( __PREC_WORD_ARRAY[nodeQueue.front()->value_type.DataType.Length] > ansDecimalLen ){
+                ansDecimalLen = __PREC_WORD_ARRAY[nodeQueue.front()->value_type.DataType.Length];
+            }
             nodeQueue.pop();
         }
         // 将 pStack 里面的数据 拷贝到 expr 中
-        expr = CloneDataFromBinaryTree(pStack);
+        expr = CloneDataFromBinaryTree(pStack, ansDecimalLen);
     }
 
     AriesEngineShell::AriesEngineShell()

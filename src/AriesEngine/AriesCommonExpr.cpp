@@ -179,8 +179,8 @@ BEGIN_ARIES_ENGINE_NAMESPACE
 
             auto logic_type = static_cast< AriesLogicOpType >( boost::get< int >( content ) );
             std::string calcExpr = "";
-            auto left_dynamic_code = children[ 0 ]->stringForDynamicCodeInternal( aggFunctions, seq, tmpParams, constValues, ariesComparators );
-            auto right_dynamic_code = children[ 1 ]->stringForDynamicCodeInternal( aggFunctions, seq, tmpParams, constValues, ariesComparators );
+            auto left_dynamic_code = children[ 0 ]->stringForDynamicCodeInternal( aggFunctions, seq, tmpParams, constValues, ariesComparators, false, this->value_type.DataType.AdaptiveLen );
+            auto right_dynamic_code = children[ 1 ]->stringForDynamicCodeInternal( aggFunctions, seq, tmpParams, constValues, ariesComparators, false, this->value_type.DataType.AdaptiveLen );
             bool need_reverse = contains_decimal( children[ 0 ] ) && !contains_decimal( children[ 1 ] );
 
             std::vector< AriesDynamicCodeParam > left_params, right_params;
@@ -1743,8 +1743,8 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                 }
                 else
                 {
-                    result = "(" + children[ 0 ]->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral ) + content_string
-                        + children[ 1 ]->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral ) + ")";
+                    result = "(" + children[ 0 ]->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral, ansDecLength) + content_string
+                        + children[ 1 ]->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral, ansDecLength) + ")";
                 }
                 break;
             }
@@ -1886,8 +1886,8 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                 }
                 else
                 {
-                    result = "( (" + children[ 0 ]->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral ) + ")"
-                            + content_string + "(" + children[ 1 ]->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral )
+                    result = "( (" + children[ 0 ]->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral, ansDecLength ) + ")"
+                            + content_string + "(" + children[ 1 ]->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral, ansDecLength )
                             + ") )";
                 }
 
@@ -1977,11 +1977,11 @@ BEGIN_ARIES_ENGINE_NAMESPACE
                         if( cur )
                         {
                             result += GenerateParamType( value_type ) + "( "
-                                    + child->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral ) + " )";
+                                    + child->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral, ansDecLength ) + " )";
                         }
                         else 
                         {
-                            result += child->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral );
+                            result += child->stringForDynamicCodeInternal( aggFunctions, seq, ariesParams, constValues, ariesComparators, printConstAsLiteral, ansDecLength );
                         }
                     }
                         

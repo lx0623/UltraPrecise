@@ -20,6 +20,9 @@ BEGIN_ARIES_ACC_NAMESPACE
     template< int LEN >
     struct aries_char;
 
+    template< int LEN >
+    struct AriesDecimal;
+
     using PCSTR = const char*;
 
     template< typename >
@@ -29,6 +32,11 @@ BEGIN_ARIES_ACC_NAMESPACE
 
     template< >
     struct is_decimal< Decimal > : public true_type
+    {
+    };
+
+    template< int LEN>
+    struct is_decimal< AriesDecimal< LEN > > : public true_type
     {
     };
 
